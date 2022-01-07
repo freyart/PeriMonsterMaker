@@ -1,0 +1,99 @@
+@import './statblock';
+$redberry: #980000;
+
+.bg-redberry {
+    background-color: $redberry;
+}
+
+.width-attr-fixed {
+    width: 55px;
+}
+
+.minwidth-375 { min-width: 375px;}
+.minwidth-120 {min-width: 120px;}
+.minwidth-100 {min-width: 100px;}
+.minwidth-50 {min-width: 50px;}
+  
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number]:not(.spinner) {
+  -moz-appearance: textfield;
+}
+
+#mainMenu{
+  a {
+    color: white;
+  }
+}
+
+#tableGallery-container {
+  background-color: $redberry;
+  padding: 10px;
+  
+  table {
+    border: 2px solid #343a40;
+
+    thead th:hover {
+      cursor: pointer;
+      background-color: #606060;
+    }
+
+    .loading {background-color: whitesmoke;}
+
+    tbody tr:not(.loading) {
+      cursor: pointer;
+      color: #343a40;
+      background-color: whitesmoke;
+
+      &:nth-child(even){
+        background-color: silver;
+      }
+
+      &:hover {
+        background-color: #a0a0a0;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 991px) {
+
+  #statblockGallery > .row:first-child() {
+    flex-direction: column-reverse;
+    margin-bottom: 15px;
+
+    & > div:nth-child(2) {
+      padding-bottom: 15px;
+    }
+  }
+}
+
+.feature-label-spacer {
+  display: inline-block;
+  height: 38px;
+  &::before{
+    content: "\00a0";
+  }
+}
+
+.spin {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 10px solid rgba(255, 255, 255, .3);
+  border-radius: 50%;
+  border-top-color: $redberry;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,482 @@
+/*
+    pour générer le filtre pour colorer les icones voir 
+    https://codepen.io/sosuke/pen/Pjoqqp
+*/
+
+.monster {
+    @extend .statblock;
+    --colorlight: #b85b56;
+    --color: #953D2F;
+    --colordark: #7F291B;
+    --background: #FAF6F6;
+    --section-background: #ECDCD9;
+    --t-color: invert(28%) sepia(25%) saturate(2088%) hue-rotate(327deg) brightness(93%) contrast(88%);
+    --t-light-icons: invert(73%) sepia(3%) saturate(2795%) hue-rotate(314deg) brightness(83%) contrast(102%);
+}
+
+.hazard {
+    @extend .statblock;
+    --colorlight: #7CB16C;
+    --color: #478D2D;
+    --colordark: #21782F;
+    --background: #F6FAF6;
+    --section-background: #E6E8DD;
+    --t-color: invert(52%) sepia(15%) saturate(2009%) hue-rotate(59deg) brightness(86%) contrast(85%);
+    --t-light-icons: invert(73%) sepia(14%) saturate(464%) hue-rotate(51deg) brightness(104%) contrast(83%);
+}
+
+.npc {
+    @extend .statblock;
+    --colorlight: #7d96c3;
+    --color: #3d4878;
+    --colordark: #11295e;
+    --background: #F6F6FA;
+    --section-background: #ced6da;
+    --t-color: invert(26%) sepia(9%) saturate(3627%) hue-rotate(192deg) brightness(92%) contrast(83%);
+    --t-light-icons: invert(98%) sepia(4%) saturate(879%) hue-rotate(170deg) brightness(87%) contrast(95%);
+}
+
+.statblock {
+    --gray: RGB(182, 176, 177);
+    --common: RGB(89, 188, 6);
+    --uncommon: RGB(208, 171, 17);
+    --rare: RGB(207, 17, 17);
+    background-color: var(--background);
+    padding: 3px;
+    width: 450px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: inline-block;
+
+    /* GÉNÉRAL */
+    .name {
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    /* HEADER */
+    .header {
+        background-color: var(--colordark);
+        color: white;
+        font-weight: 400;
+        font-size: 0.9em;
+
+        .header-top {
+            display: flex;
+
+            .identification {
+                flex: 1 1 50%;
+                padding: 4px 8px;
+                background-color: var(--color);
+                clip-path: polygon(0 0, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+            }
+
+            .titletext {
+                font-variant: small-caps;
+                text-transform: capitalize;
+                font-size: 1.7em;
+                font-weight: 600;
+
+                span {
+                    display: inline-block;
+                    vertical-align: top;
+                    margin-left: 4px;
+                }
+
+                .icon {
+                    height: 25px;
+                    background-size: 22px 22px;
+                    margin-left: 5px;
+                    margin-right: -5px;
+                }
+            }
+
+            .icons {
+                margin-left: -5px;
+                flex: 0 0 80px;
+                text-align: center;
+
+                .icon {
+                    filter: invert(100%);
+                }
+
+            }
+        }
+
+        .keywords {
+            border-top: 1px solid var(--colorlight);
+            text-align: center;
+            color: var(--background);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 2px;
+
+            &>div {
+                display: inline-block;
+            }
+
+            &>div+div::before {
+                content: '';
+                display: inline-block;
+                width: 0.45em;
+                height: 0.45em;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+                background-color: var(--colorlight);
+                vertical-align: top;
+                margin: 7px 7px 0 7px;
+            }
+        }
+    }
+
+    /* STATS */
+    .stats {
+        margin: 8px 3px;
+        display: flex;
+
+        &>div {
+            flex: 1 0 45%;
+            display: flex;
+            flex-direction: column;
+            padding: 0 5px;
+        }
+
+        &>div+div {
+            border-left: 1px dotted var(--color);
+        }
+
+        .item {
+
+            div {
+                display: inline-block;
+
+                &:nth-child(2) {
+                    float: right;
+                }
+            }
+
+            .name {
+                color: var(--color);
+            }
+        }
+
+        .icon {
+            margin: 0 5px;
+            filter: var(--t-color);
+        }
+    }
+
+    /* ATTRIBUTES */
+    .attributes {
+        color: var(--background);
+        display: flex;
+        background-color: var(--color);
+        margin: 8px;
+        font-size: large;
+
+        &>div {
+            flex: 1 0 16%;
+
+            &>div {
+                color: var(--background);
+                text-align: center;
+
+                &:nth-child(1) {
+                    text-transform: uppercase;
+                    font-weight: 700;
+                }
+
+                &:nth-child(3) {
+                    background-color: var(--colordark);
+                }
+            }
+        }
+
+        &>div+div {
+            border-left: 1px solid var(--colorlight);
+        }
+
+        .icon {
+            margin: 0 2px;
+            filter: var(--t-light-icons);
+            height: 24px;
+            width: 24px;
+        }
+    }
+
+    /* AUTRES */
+    .autres {
+        margin: 8px;
+
+        div {
+            margin-left: 28px;
+            text-indent: -28px;
+        }
+
+        .name {
+            color: var(--color);
+            margin-right: 5px;
+        }
+
+        .icon {
+            margin: 0 5px;
+            filter: var(--t-color);
+        }
+    }
+
+    /* TRAITS */
+    .traits {
+        margin: 8px;
+
+        .section {
+            background-color: var(--section-background);
+            color: var(--section-background);
+            text-transform: uppercase;
+            font-size: 0.9em;
+            font-weight: 800;
+            margin: 5px 0;
+            border-bottom: 3px solid var(--color);
+
+            div {
+                display: inline-block;
+                padding: 1px 30px 0 15px;
+                background-color: var(--color);
+                clip-path: polygon(0 0, calc(100% - 15px) 0%, 100% 100%, 0% 100%);
+            }
+        }
+
+        &>.item+.item {
+            border-top: 1px dotted var(--color);
+            margin-top: 5px;
+            padding-top: 5px;
+
+        }
+
+        .item {
+            &>div {
+                display: inline-block;
+            }
+
+            .name {
+                display: inline-block;
+                color: black;
+                margin-right: 5px;
+
+                &.text {
+                    margin-right: 0px;
+                }
+
+                &:not(.text)::after {
+                    font-weight: 700;
+                    content: ": ";
+                }
+
+                &:not(.text)::before {
+                    content: '';
+                    display: inline-block;
+                    width: 1.5em;
+                    height: 1em;
+                    background-color: var(--trait);
+                    margin-right: 3px;
+                    vertical-align: top;
+                    margin-top: 3px;
+                    clip-path: polygon(0 0, calc(100% - 8px) 0%, 100% 100%, 0% 100%);
+                    background-color: var(--gray);
+                }
+            }
+
+            .common::before {
+                background-color: var(--common) !important;
+            }
+
+            .uncommon::before {
+                background-color: var(--uncommon) !important;
+            }
+
+            .rare::before {
+                background-color: var(--rare) !important;
+            }
+        }
+
+        .special {
+            display: inline-block;
+            font-weight: 600;
+            text-transform: capitalize;
+            margin-left: 4px;
+
+            &::before {
+                content: '(';
+            }
+
+            &::after {
+                content: ')';
+            }
+        }
+    }
+}
+
+/* ICONS */
+$i-award: url("../img/icons/award.svg");
+$i-bell: url("../img/icons/bell.svg");
+$i-brain: url("../img/icons/brain.svg");
+$i-bulb: url("../img/icons/bulb.svg");
+$i-crosshair: url("../img/icons/crosshair.svg");
+$i-eye-closed: url("../img/icons/eye-closed.svg");
+$i-eye-open: url("../img/icons/eye-open.svg");
+$i-flame: url("../img/icons/flame.svg");
+$i-footprints: url("../img/icons/footprints.svg");
+$i-heart: url("../img/icons/heart.svg");
+$i-heartbeat: url("../img/icons/heartbeat.svg");
+$i-lightning: url("../img/icons/lightning.svg");
+$i-moon: url("../img/icons/moon.svg");
+$i-pulse: url("../img/icons/pulse.svg");
+$i-shield-full: url("../img/icons/shield-full.svg");
+$i-shield-half: url("../img/icons/shield-half.svg");
+$i-speech: url("../img/icons/speech.svg");
+$i-star-empty: url("../img/icons/star-empty.svg");
+$i-star-filled: url("../img/icons/star-filled.svg");
+$i-support: url("../img/icons/support.svg");
+$i-target: url("../img/icons/target.svg");
+$i-tools: url("../img/icons/tools.svg");
+$i-vulnerable: url("../img/icons/vulnerable.svg");
+$i-weight: url("../img/icons/weight.svg");
+
+i.icon {
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-size: 1.2em 1.2em;
+	height: 1.2em;
+	width: 1.2em;
+	vertical-align: middle;
+
+	/* Roles */
+	&.star-empty {
+		background-image: $i-star-empty
+	}
+
+	&.star-filled {
+		background-image: $i-star-filled
+	}
+
+	&.controller {
+		background-image: $i-brain
+	}
+
+	&.defender {
+		background-image: $i-shield-half
+	}
+
+	&.lurker {
+		background-image: $i-moon
+	}
+
+	&.scout {
+		background-image: $i-eye-open
+	}
+
+	&.striker {
+		background-image: $i-flame
+	}
+
+	&.supporter {
+		background-image: $i-support
+	}
+
+	/* Attributes */
+	&.str {
+		background-image: $i-weight
+	}
+
+	&.dex {
+		background-image: $i-crosshair
+	}
+
+	&.con {
+		background-image: $i-heartbeat
+	}
+
+	&.int {
+		background-image: $i-brain
+	}
+
+	&.wis {
+		background-image: $i-eye-open
+	}
+
+	&.cha {
+		background-image: $i-speech
+	}
+
+	/* Stats */
+	&.immunity,
+	&.ac,
+	&.def {
+		background-image: $i-shield-full
+	}
+
+	&.hp {
+		background-image: $i-heart
+	}
+
+	&.init {
+		background-image: $i-lightning
+	}
+
+	&.perception {
+		background-image: $i-eye-open
+	}
+
+	&.stealth {
+		background-image: $i-eye-closed
+	}
+
+	&.atk {
+		background-image: $i-crosshair
+	}
+
+	&.dcs {
+		background-image: $i-target
+	}
+
+	&.dmg {
+		background-image: $i-flame
+	}
+
+	&.prof {
+		background-image: $i-tools
+	}
+
+	&.cr {
+		background-image: $i-award
+	}
+
+	&.speed {
+		background-image: $i-footprints
+	}
+
+	&.skill {
+		background-image: $i-bulb
+	}
+
+	&.threshold {
+		background-image: $i-pulse
+	}
+
+	&.vulnerable {
+		background-image: $i-vulnerable
+	}
+
+	&.resist {
+		background-image: $i-shield-half
+	}
+
+	&.senses {
+		background-image: $i-bell
+	}
+
+	&.language {
+		background-image: $i-speech
+	}
+}

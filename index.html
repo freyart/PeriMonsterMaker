@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./dist/style.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <title>Peri's Monster Maker</title>
+</head>
+
+<body>
+    <!-- ÉCRAN PRINCIPAL -->
+    <div id="mainMenu" class="container-fluid p-3">
+        <div class="container bg-redberry m-3">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="jumbotron jumbotron-fluid bg-dark p-2 text-white shadow-lg border border-light mt-3">
+                        <div class="container">
+                            <h1 class="display-5">Peri's Monster Maker</h1>
+                            <div class="lead">A monstrous form appears before you. ROLL INITIATIVE!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center text-white pb-3">
+                <div class="col-3 text-center">
+                <a href="#" onclick="navStatblockCreation()">
+                    <img src="./img/icons/creation.svg"><h5>Monster Creation</h5>
+                </a>
+                </div>
+                <div class="col-2">&nbsp;</div>
+                <div class="col-3 text-center">
+                    <a href="#" onclick="navStatblockGallery()">
+                        <img src="./img/icons/gallery.svg"><h5>Gallery</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="row justify-content-center m-3">
+                <div class="col-6 bg-dark text-white border border-white m-3 pt-3">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label text-right">Github Username</label>
+                        <div class="col-sm-8">
+                            <input id="githubUsername" type="text" placeholder="Insert username" class="form-control" value="Freyart">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label text-right">Github Repo</label>
+                        <div class="col-sm-8">
+                            <input id="githubRepo" type="text" placeholder="Insert repo name" class="form-control" value="Monsters">
+                        </div>
+                    </div>
+                    <div class="form-group row justify-content-center">
+                        <button class="btn btn-outline-secondary" onclick="openGitHub()"><i class="bi bi-github"></i> Visit Repo </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN DE CRÉATION -->
+    <div id="statblockCreation" class="container-fluid p-3">
+        <div class="row">
+            <div class="col-lg-7 col-sm-12 pr-0">
+                <div class="container bg-dark p-2">
+                    <div class="row">
+                        <div class="col-9 form-inline">
+                            <div class="input-group input-group-sm m-1">
+                                <input class="form-control form-control" id="import-statblock" type="file" accept=".json" >
+                                <div class="input-group-append">
+                                    <button class="btn btn-sm btn-warning" onClick="importJSON()">Import</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-warning m-1" onclick="resetStatblock()">Reset All</button>
+                            <button class="btn btn-sm btn-primary m-1" onClick="exportJSON()">Export</button>
+                        </div>
+                        <div class="col-3 text-right">
+                            <button class="btn" onclick="navMenuPrincipal()">Back to Menu</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container bg-redberry text-white p-2 shadow border border-dark">
+                    <form>
+                        <div class="form-row">
+                            <div class="col-6">
+                                <label>Name</label>
+                                <input type="text" id="name" class="form-control" placeholder="Insert name here">
+                            </div>
+                            <div class="col-2">
+                                <label>Level</label>
+                                <input type="number" id="level" class="form-control spinner" placeholder="0" min="0" max="24">
+                            </div>
+                            <div class="col-2">
+                                <label>Rank</label>
+                                <select class="form-control" id="rank">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <label>Role</label>
+                                <select class="form-control" id="role">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-2">
+                                <label>Type</label>
+                                <select class="form-control" id="type">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label>Keywords<i> (optional)</i></label>
+                                <input type="text" id="keywords" class="form-control" placeholder="ex: goblinoid, undead">
+                            </div>
+                            <div class="col-2">
+                                <label>Size</label>
+                                <select class="form-control" id="size">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <label>Origin</label>
+                                <select class="form-control" id="origin">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <label>Form</label>
+                                <select class="form-control" id="form">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-4 p-0 m-0">
+                            <div class="bg-redberry text-white border mt-2 p-2 border-dark"> 
+                                <form class="container-fluid">
+                                    <div class="row"><h5>Ability Scores Distribution</h4></div>
+
+                                    <div class="row">
+                                        <div class="col p-0">
+                                            <div class="input-group mb-2 mr-sm-2">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text bg-primary text-white width-attr-fixed">1st</div>
+                                                </div>
+                                                <select class="form-control attr" id="attr1">
+                                                    <!-- Dynamic -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-3 p-1">
+                                                <input class="" type="checkbox" value="" id="attr1null">
+                                                <label class="" for="flexCheckDefault">
+                                                  no
+                                                </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col p-0">
+                                            <div class="input-group mb-2 mr-sm-2">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text bg-success text-white width-attr-fixed">2nd</div>
+                                                </div>
+                                                <select class="form-control attr" id="attr2">
+                                                    <!-- Dynamic -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-3 p-1">
+                                                <input class="" type="checkbox" value="" id="attr2null">
+                                                <label class="" for="flexCheckDefault">
+                                                  no
+                                                </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col p-0">
+                                            <div class="input-group mb-2 mr-sm-2">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text bg-success text-white width-attr-fixed">3rd</div>
+                                                </div>
+                                                <select class="form-control attr" id="attr3">
+                                                    <!-- Dynamic -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-3 p-1">
+                                                <input class="" type="checkbox" value="" id="attr3null">
+                                                <label class="" for="flexCheckDefault">
+                                                  no
+                                                </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col p-0">
+                                            <div class="input-group mb-2 mr-sm-2">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text width-attr-fixed">4th</div>
+                                                </div>
+                                                <select class="form-control attr" id="attr4">
+                                                    <!-- Dynamic -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-3 p-1">
+                                                <input class="" type="checkbox" value="" id="attr4null">
+                                                <label class="" for="flexCheckDefault">
+                                                  no
+                                                </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col p-0">
+                                            <div class="input-group mb-2 mr-sm-2">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text width-attr-fixed">5th</div>
+                                                </div>
+                                                <select class="form-control attr" id="attr5">
+                                                    <!-- Dynamic -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-3 p-1">
+                                                <input class="" type="checkbox" value="" id="attr5null">
+                                                <label class="" for="flexCheckDefault">
+                                                  no
+                                                </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col p-0">
+                                            <div class="input-group mb-2 mr-sm-2">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text width-attr-fixed">6th</div>
+                                                </div>
+                                                <select class="form-control attr" id="attr6">
+                                                    <!-- Dynamic -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-3 p-1">
+                                                <input class="" type="checkbox" value="" id="attr6null">
+                                                <label class="" for="flexCheckDefault">
+                                                  no
+                                                </label>
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0 m-0">
+                            <div class="bg-redberry text-white border ml-2 mt-2 p-2 border-dark">
+                                <h5>Traits</h5>
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        Movement
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="movement" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        Skills
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="skills" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        D. Threshold
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="dthreshold" class="form-control">
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        Vulnerable
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="vulnerable" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        Resistant
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="resistant" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        D. Immune
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="dimmune" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        C. Immune
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="cimmune" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        Senses
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="senses" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-3 text-right p-2">
+                                        Languages
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="languages" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+
+                <div class="container-fluid mt-2 text-white bg-redberry shadow border border-dark">
+                    <div class="row">
+                        <div class="col">
+                            <h3>Features</h3>
+                            <div class="features-container">
+
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col text-right pt-2">
+                            <div class="btn-group mb-2" role="group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-lightning-fill"></i>
+                                </button>
+                                <ul id="quick-templates" class="dropdown-menu">
+                                </ul>
+                              </div>
+                            <button id="btnAddFeature" class="btn btn-primary mb-2"><i class="bi bi-plus-circle"></i> Add feature</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5 col-sm-12">
+                <div id="info-pannel" class="container">
+                    <div class="row bg-dark text-white border border-white p-2">
+                        <div class="btn-group btn-group-toggle mx-auto" data-toggle="buttons">
+                            <label class="btn btn-secondary">
+                              <input type="radio" name="options" id="btn-info-stats" autocomplete="off" onclick="showInfo('info-stats')" checked> Calculated Stats
+                            </label>
+                            <label class="btn btn-secondary">
+                              <input type="radio" name="options" id="btn-info-dam" autocomplete="off" onclick="showInfo('info-dam')"> Damage Calculator
+                            </label>
+                            <label class="btn btn-secondary">
+                              <input type="radio" name="options" id="btn-info-prev" autocomplete="off" onclick="showInfo('info-prev')"> Statblock Preview
+                            </label>
+                          </div>
+                    </div>
+
+                    <div id="info-stats" class="row bg-redberry text-white pt-2">
+                        <div class="col-6">
+                            <div class="input-group mb-1 mr-sm-2">
+                                <h3>Stats Overrides</h3>
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">AC</div>
+                                </div>
+                                <input id="ac" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">HP</div>
+                                </div>
+                                <input id="hp" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">Init</div>
+                                </div>
+                                <input id="init" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">Pass. Percep.</div>
+                                </div>
+                                <input id="perception" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">Pass. Stealth.</div>
+                                </div>
+                                <input id="stealth" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">Sugg. Speed</div>
+                                </div>
+                                <input id="speed" type="text" disabled="true" class="form-control">
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">Atk Bonus</div>
+                                </div>
+                                <input id="atk" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">DC Low</div>
+                                </div>
+                                <input id="dc-low" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">DC High</div>
+                                </div>
+                                <input id="dc-high" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">Damage</div>
+                                </div>
+                                <input id="dmg" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-120">Proficiency</div>
+                                </div>
+                                <input id="prof" type="number" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">CR</div>
+                                </div>
+                                <input id="cr" type="text" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">XP</div>
+                                </div>
+                                <input id="xp" type="number" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="info-dam" class="row bg-redberry text-white pt-2">
+                        <div class="col-12"><h3>Damage Calculator</h3></div>
+                        <div class="col-6 mb-3">
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">Avg. Damage</div>
+                                </div>
+                                <input id="info-dam-avg" type="number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">Multiplier</div>
+                                </div>
+                                <input id="info-dam-multiplier" type="number" class="form-control" placeholder="1">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text width-attr-fixed">Dice</div>
+                                </div>
+                                <select class="form-control attr" id="info-dam-dice">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">Max. Dices</div>
+                                </div>
+                                <input id="info-dam-maxDices" type="number" class="form-control" placeholder="20">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">Max. Static</div>
+                                </div>
+                                <input id="info-dam-maxStatic" type="number" class="form-control" placeholder="20">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">Formula</div>
+                                </div>
+                                <input id="info-dam-formula" type="text" class="form-control">
+                            </div>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text minwidth-50">Range</div>
+                                </div>
+                                <input id="info-dam-range" type="text" class="form-control">
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div id="info-prev" class="row p-0 mt-2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN DE GALLERIE -->
+    <div id="statblockGallery" class="container-fluid p-3">
+        <div class="row">
+            <div class="col-lg-8 col-sm-12">
+                <div id="statblockShow">
+
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-12">
+                <div class="container-fluid bg-dark p-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row text-right flex-md-row-reverse ">
+                                <div class="col-lg-12 col-md-6 col-sm-12 mb-2 mb-md-0 mb-lg-2">
+                                    <button class="btn mr-1 btn-outline-primary btn-sm" onclick="galleryRefresh()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                                    <button class="btn" onclick="navMenuPrincipal()">Back to Menu</button>
+                                </div>
+                                <div class="input-group col-lg-12 col-md-6 col-sm-12">
+                                    <select class="form-control" id="selectGalleryFolder" onchange="folderSelectionChanged()"></select>
+                                    <div class="input-group-text pl-4">
+                                        <input class="form-check-input" id="checkGalleryFolder" type="checkbox" onchange="folderSelectionChanged()" checked="true">show subfolders 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="tableGallery-container" class="container-fluid bg-redberry p-2">
+                    <table class="table table-sm table-striped m-0" id="tableGallery">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="col" onclick="gallerySort('name')">Name<i class="bi bi-arrow-down ml-1"></i></th>
+                                <th class="col minwidth-100" onclick="gallerySort('level')">Level</th>
+                                <th class="col minwidth-100" onclick="gallerySort('rank')">Rank</th>
+                                <th class="col minwidth-100" onclick="gallerySort('role')">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="./dist/code.js"></script>
+<script>
+    navMenuPrincipal();
+    initMonsterMakerForm()
+</script>
+
+</html>
