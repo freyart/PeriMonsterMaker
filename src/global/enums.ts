@@ -13,7 +13,6 @@ enum Rank {
 }
 
 enum Role {
-    None = 0,
     Controller = 1,
     Defender = 2,
     Lurker = 3,
@@ -30,6 +29,12 @@ enum Ability {
     Intelligence = 'int',
     Wisdom = 'wis',
     Charisma = 'cha',
+}
+
+enum TrainedValue {
+    Untrained,
+    Half,
+    Proficient,
 }
 
 enum StatblockType {
