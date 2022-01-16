@@ -60,25 +60,20 @@ class StatLine {
     readonly hp: number
     readonly atk: number
     readonly dcLow: number
-    readonly dcHigh: number
     readonly dmg: number
     readonly minionDmg: number
     readonly prof: number
-    readonly saves: number[]
     readonly abilityMods: number[]
     readonly xp: number
 
-    constructor(level: number, ac: number, hp: number, atk: number, dcLow: number, dcHigh: number, dmg: number, minionDmg: number, prof: number, saves: number[], abilityMods: number[], xp: number) {
+    constructor(level: number, ac: number, hp: number, atk: number, dcLow: number, dmg: number, prof: number, abilityMods: number[], xp: number) {
         this.level = level
         this.ac = ac
         this.hp = hp
         this.atk = atk
         this.dcLow = dcLow
-        this.dcHigh = dcHigh
         this.dmg = dmg
-        this.minionDmg = minionDmg
         this.prof = prof
-        this.saves = saves
         this.abilityMods = abilityMods
         this.xp = xp
     }
