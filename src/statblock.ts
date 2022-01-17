@@ -16,8 +16,7 @@ type StatblockStats = {
     perception: number
     stealth: number
     atk: number
-    dc_low: number
-    dc_high: number
+    dc: number
     dmg: number
     prof: number
     cr: string
@@ -164,12 +163,10 @@ class Statblock {
             keywords2.textContent = Rank[this.header.rank]
             keywords.appendChild(keywords2)
 
-            if (this.header.role != Role.None)
-            {
-                const keywords3 = document.createElement("div")
-                keywords3.textContent = Role[this.header.role]
-                keywords.appendChild(keywords3)
-            }
+            const keywords3 = document.createElement("div")
+            keywords3.textContent = Role[this.header.role]
+            keywords.appendChild(keywords3)
+
             conteneur.appendChild(keywords)
         }
 
@@ -189,7 +186,7 @@ class Statblock {
             col1.appendChild(this.CreateLineStat("stealth","Passive Stealth",this.stats.stealth))
 
             col2.appendChild(this.CreateLineStat("atk","Atk Bonus", showPlusMinus(this.stats.atk)))
-            col2.appendChild(this.CreateLineStat("dcs","Atk DCs", this.stats.dc_low + "-" + this.stats.dc_high))
+            col2.appendChild(this.CreateLineStat("dcs","Atk DC", showPlusMinus(this.stats.dc)))
             col2.appendChild(this.CreateLineStat("dmg","Damage",this.stats.dmg))
             col2.appendChild(this.CreateLineStat("prof","Proficiency", showPlusMinus(this.stats.prof)))
             col2.appendChild(this.CreateLineStat("cr","CR", this.stats.cr + " (" + this.stats.xp + " XP)"))
@@ -203,12 +200,12 @@ class Statblock {
     private CreateAbilities() : Element {
         const statblock = this.CreateDivWithClass("attributes") 
         if(this.abilities != null){
-            statblock.appendChild(this.CreateLineAttr("str", this.abilities.strMod, this.abilities.strDef))
-            statblock.appendChild(this.CreateLineAttr("dex", this.abilities.dexMod, this.abilities.dexDef))
-            statblock.appendChild(this.CreateLineAttr("con", this.abilities.conMod, this.abilities.conDef))
-            statblock.appendChild(this.CreateLineAttr("int", this.abilities.intMod, this.abilities.intDef))
-            statblock.appendChild(this.CreateLineAttr("wis", this.abilities.wisMod, this.abilities.wisDef))
-            statblock.appendChild(this.CreateLineAttr("cha", this.abilities.chaMod, this.abilities.chaDef))
+            statblock.appendChild(this.CreateLineAttr("str", this.abilities.strMod))
+            statblock.appendChild(this.CreateLineAttr("dex", this.abilities.dexMod))
+            statblock.appendChild(this.CreateLineAttr("con", this.abilities.conMod))
+            statblock.appendChild(this.CreateLineAttr("int", this.abilities.intMod))
+            statblock.appendChild(this.CreateLineAttr("wis", this.abilities.wisMod))
+            statblock.appendChild(this.CreateLineAttr("cha", this.abilities.chaMod))
         }
 
         return statblock
@@ -216,6 +213,18 @@ class Statblock {
 
     private CreateOtherStats() : Element {
         const autres = this.CreateDivWithClass("autres") 
+        const abil = this.abilities
+        if(abil.strMod != abil.strDef || 
+            abil.dexMod != abil.dexDef ||
+            abil.conMod != abil.conDef ||
+            abil.intMod != abil.intDef ||
+            abil.wisMod != abil.wisDef ||
+            abil.chaMod != abil.chaDef ) {
+                autres.appendChild(this.CreateLineStatAutre(
+                    "save", "Saves", this.GenererValeurSaves()))
+            }
+
+
         if(this.statsAutres != null){
             if(this.statsAutres.movement) autres.appendChild(this.CreateLineStatAutre(
                 "speed", "Speed", this.statsAutres.movement))
@@ -293,21 +302,16 @@ class Statblock {
         return element
     }
 
-    private CreateLineAttr(ability: string, strMod: number | null, strDef: number | null): Element {
+    private CreateLineAttr(ability: string, statMod: number | null): Element {
         const attribute = document.createElement("div")
         const score = document.createElement("div")
         const mod = document.createElement("div")
-        const def = document.createElement("div")
 
         score.textContent = ability
-        mod.appendChild(this.CreateIconFor(ability))
-        mod.innerHTML += showNullsAsQuadra(strMod)
-        def.appendChild(this.CreateIconFor("def"))
-        def.innerHTML += showNullsAsQuadra(strDef)
+        mod.innerHTML = this.ShowAbilityScore(statMod)
 
         attribute.appendChild(score)
         attribute.appendChild(mod)
-        attribute.appendChild(def)
 
         return attribute
     }
@@ -333,6 +337,30 @@ class Statblock {
         item.innerHTML += feature.description
 
         return item
+    }
+
+    private ShowAbilityScore(ability:number|null) : string {
+        if(ability === null){
+            return "0"
+        }
+        else {
+            const score = Math.max(1, (ability + 5 ) * 2)
+            return `${score}&nbsp;(${showPlusMinus(ability)})` 
+        }
+    }
+
+    private GenererValeurSaves(): string {
+        let saves: string[] = Array()
+        const abi = this.abilities
+
+        if(abi.strMod != abi.strDef) saves.push("Str&nbsp;" + showPlusMinus(abi.strDef))
+        if(abi.dexMod != abi.dexDef) saves.push("Dex&nbsp;" + showPlusMinus(abi.dexDef))
+        if(abi.conMod != abi.conDef) saves.push("Con&nbsp;" + showPlusMinus(abi.conDef))
+        if(abi.intMod != abi.intDef) saves.push("Int&nbsp;" + showPlusMinus(abi.intDef))
+        if(abi.wisMod != abi.wisDef) saves.push("Wis&nbsp;" + showPlusMinus(abi.wisDef))
+        if(abi.chaMod != abi.chaDef) saves.push("Cha&nbsp;" + showPlusMinus(abi.chaDef))
+
+        return saves.join(", ")
     }
 }
 

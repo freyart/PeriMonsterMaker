@@ -1,0 +1,565 @@
+@charset "UTF-8";
+/*
+    pour générer le filtre pour colorer les icones voir 
+    https://codepen.io/sosuke/pen/Pjoqqp
+*/
+.monster {
+  --colorlight: #b85b56;
+  --color: #953D2F;
+  --colordark: #7F291B;
+  --background: #FAF6F6;
+  --section-background: #ECDCD9;
+  --t-color: invert(28%) sepia(25%) saturate(2088%) hue-rotate(327deg) brightness(93%) contrast(88%);
+  --t-light-icons: invert(73%) sepia(3%) saturate(2795%) hue-rotate(314deg) brightness(83%) contrast(102%);
+}
+
+.hazard {
+  --colorlight: #7CB16C;
+  --color: #478D2D;
+  --colordark: #21782F;
+  --background: #F6FAF6;
+  --section-background: #E6E8DD;
+  --t-color: invert(52%) sepia(15%) saturate(2009%) hue-rotate(59deg) brightness(86%) contrast(85%);
+  --t-light-icons: invert(73%) sepia(14%) saturate(464%) hue-rotate(51deg) brightness(104%) contrast(83%);
+}
+
+.npc {
+  --colorlight: #7d96c3;
+  --color: #3d4878;
+  --colordark: #11295e;
+  --background: #F6F6FA;
+  --section-background: #ced6da;
+  --t-color: invert(26%) sepia(9%) saturate(3627%) hue-rotate(192deg) brightness(92%) contrast(83%);
+  --t-light-icons: invert(98%) sepia(4%) saturate(879%) hue-rotate(170deg) brightness(87%) contrast(95%);
+}
+
+.statblock, .monster, .hazard, .npc {
+  --gray: RGB(182, 176, 177);
+  --common: RGB(89, 188, 6);
+  --uncommon: RGB(208, 171, 17);
+  --rare: RGB(207, 17, 17);
+  background-color: var(--background);
+  padding: 3px;
+  width: 400px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: inline-block;
+  line-height: 20px;
+  font-size: 15px;
+  /* GÉNÉRAL */
+  /* HEADER */
+  /* STATS */
+  /* ATTRIBUTES */
+  /* AUTRES */
+  /* TRAITS */
+}
+
+.statblock .name, .monster .name, .hazard .name, .npc .name {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.statblock .header, .monster .header, .hazard .header, .npc .header {
+  background-color: var(--colordark);
+  color: white;
+  font-weight: 400;
+  font-size: 0.9em;
+}
+
+.statblock .header .header-top, .monster .header .header-top, .hazard .header .header-top, .npc .header .header-top {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  line-height: 24px;
+}
+
+.statblock .header .header-top .identification, .monster .header .header-top .identification, .hazard .header .header-top .identification, .npc .header .header-top .identification {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 50%;
+          flex: 1 1 50%;
+  padding: 4px 8px;
+  background-color: var(--color);
+  -webkit-clip-path: polygon(0 0, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+          clip-path: polygon(0 0, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+}
+
+.statblock .header .header-top .titletext, .monster .header .header-top .titletext, .hazard .header .header-top .titletext, .npc .header .header-top .titletext {
+  font-variant: small-caps;
+  text-transform: capitalize;
+  font-size: 1.4em;
+  font-weight: 600;
+}
+
+.statblock .header .header-top .titletext span, .monster .header .header-top .titletext span, .hazard .header .header-top .titletext span, .npc .header .header-top .titletext span {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 4px;
+}
+
+.statblock .header .header-top .titletext .icon, .monster .header .header-top .titletext .icon, .hazard .header .header-top .titletext .icon, .npc .header .header-top .titletext .icon {
+  height: 25px;
+  background-size: 22px 22px;
+  margin-left: 5px;
+  margin-right: -5px;
+}
+
+.statblock .header .header-top .icons, .monster .header .header-top .icons, .hazard .header .header-top .icons, .npc .header .header-top .icons {
+  margin-left: -5px;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 80px;
+          flex: 0 0 80px;
+  text-align: center;
+}
+
+.statblock .header .header-top .icons .titletext, .monster .header .header-top .icons .titletext, .hazard .header .header-top .icons .titletext, .npc .header .header-top .icons .titletext {
+  margin-bottom: -5px;
+  margin-top: 4px;
+}
+
+.statblock .header .header-top .icons .icon, .monster .header .header-top .icons .icon, .hazard .header .header-top .icons .icon, .npc .header .header-top .icons .icon {
+  -webkit-filter: invert(100%);
+          filter: invert(100%);
+}
+
+.statblock .header .keywords, .monster .header .keywords, .hazard .header .keywords, .npc .header .keywords {
+  border-top: 1px solid var(--colorlight);
+  text-align: center;
+  color: var(--background);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 2px;
+}
+
+.statblock .header .keywords > div, .monster .header .keywords > div, .hazard .header .keywords > div, .npc .header .keywords > div {
+  display: inline-block;
+}
+
+.statblock .header .keywords > div + div::before, .monster .header .keywords > div + div::before, .hazard .header .keywords > div + div::before, .npc .header .keywords > div + div::before {
+  content: '';
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 4px;
+  background-color: var(--colorlight);
+  vertical-align: top;
+  margin: 7px 7px 0 7px;
+}
+
+.statblock .stats, .monster .stats, .hazard .stats, .npc .stats {
+  margin: 8px 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.statblock .stats > div, .monster .stats > div, .hazard .stats > div, .npc .stats > div {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 45%;
+          flex: 1 0 45%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 0 5px;
+}
+
+.statblock .stats > div + div, .monster .stats > div + div, .hazard .stats > div + div, .npc .stats > div + div {
+  border-left: 1px dotted var(--color);
+}
+
+.statblock .stats .item div, .monster .stats .item div, .hazard .stats .item div, .npc .stats .item div {
+  display: inline-block;
+}
+
+.statblock .stats .item div:nth-child(2), .monster .stats .item div:nth-child(2), .hazard .stats .item div:nth-child(2), .npc .stats .item div:nth-child(2) {
+  float: right;
+}
+
+.statblock .stats .item .name, .monster .stats .item .name, .hazard .stats .item .name, .npc .stats .item .name {
+  color: var(--color);
+}
+
+.statblock .stats .icon, .monster .stats .icon, .hazard .stats .icon, .npc .stats .icon {
+  margin: 0 5px;
+  -webkit-filter: var(--t-color);
+          filter: var(--t-color);
+}
+
+.statblock .attributes, .monster .attributes, .hazard .attributes, .npc .attributes {
+  color: var(--background);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background-color: var(--color);
+  margin: 8px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.statblock .attributes > div, .monster .attributes > div, .hazard .attributes > div, .npc .attributes > div {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 16%;
+          flex: 1 0 16%;
+}
+
+.statblock .attributes > div > div, .monster .attributes > div > div, .hazard .attributes > div > div, .npc .attributes > div > div {
+  color: var(--background);
+  text-align: center;
+}
+
+.statblock .attributes > div > div:nth-child(1), .monster .attributes > div > div:nth-child(1), .hazard .attributes > div > div:nth-child(1), .npc .attributes > div > div:nth-child(1) {
+  background-color: var(--colordark);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.statblock .attributes > div + div, .monster .attributes > div + div, .hazard .attributes > div + div, .npc .attributes > div + div {
+  border-left: 1px solid var(--colorlight);
+}
+
+.statblock .autres, .monster .autres, .hazard .autres, .npc .autres {
+  margin: 8px;
+}
+
+.statblock .autres div, .monster .autres div, .hazard .autres div, .npc .autres div {
+  margin-left: 28px;
+  text-indent: -28px;
+}
+
+.statblock .autres .name, .monster .autres .name, .hazard .autres .name, .npc .autres .name {
+  color: var(--color);
+  margin-right: 5px;
+}
+
+.statblock .autres .icon, .monster .autres .icon, .hazard .autres .icon, .npc .autres .icon {
+  margin: 0 5px;
+  -webkit-filter: var(--t-color);
+          filter: var(--t-color);
+}
+
+.statblock .traits, .monster .traits, .hazard .traits, .npc .traits {
+  margin: 8px;
+}
+
+.statblock .traits .section, .monster .traits .section, .hazard .traits .section, .npc .traits .section {
+  background-color: var(--section-background);
+  color: var(--section-background);
+  text-transform: uppercase;
+  font-size: 0.9em;
+  font-weight: 800;
+  margin: 5px 0;
+  border-bottom: 3px solid var(--color);
+}
+
+.statblock .traits .section div, .monster .traits .section div, .hazard .traits .section div, .npc .traits .section div {
+  display: inline-block;
+  padding: 1px 30px 0 15px;
+  background-color: var(--color);
+  -webkit-clip-path: polygon(0 0, calc(100% - 15px) 0%, 100% 100%, 0% 100%);
+          clip-path: polygon(0 0, calc(100% - 15px) 0%, 100% 100%, 0% 100%);
+}
+
+.statblock .traits > .item + .item, .monster .traits > .item + .item, .hazard .traits > .item + .item, .npc .traits > .item + .item {
+  border-top: 1px dotted var(--color);
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+.statblock .traits .item > div, .monster .traits .item > div, .hazard .traits .item > div, .npc .traits .item > div {
+  display: inline-block;
+}
+
+.statblock .traits .item .name, .monster .traits .item .name, .hazard .traits .item .name, .npc .traits .item .name {
+  display: inline-block;
+  color: black;
+  margin-right: 5px;
+}
+
+.statblock .traits .item .name.text, .monster .traits .item .name.text, .hazard .traits .item .name.text, .npc .traits .item .name.text {
+  margin-right: 0px;
+}
+
+.statblock .traits .item .name:not(.text)::after, .monster .traits .item .name:not(.text)::after, .hazard .traits .item .name:not(.text)::after, .npc .traits .item .name:not(.text)::after {
+  font-weight: 700;
+  content: ": ";
+}
+
+.statblock .traits .item .name:not(.text)::before, .monster .traits .item .name:not(.text)::before, .hazard .traits .item .name:not(.text)::before, .npc .traits .item .name:not(.text)::before {
+  content: '';
+  display: inline-block;
+  width: 1.5em;
+  height: 1em;
+  background-color: var(--trait);
+  margin-right: 3px;
+  vertical-align: top;
+  margin-top: 3px;
+  -webkit-clip-path: polygon(0 0, calc(100% - 8px) 0%, 100% 100%, 0% 100%);
+          clip-path: polygon(0 0, calc(100% - 8px) 0%, 100% 100%, 0% 100%);
+  background-color: var(--gray);
+}
+
+.statblock .traits .item .common::before, .monster .traits .item .common::before, .hazard .traits .item .common::before, .npc .traits .item .common::before {
+  background-color: var(--common) !important;
+}
+
+.statblock .traits .item .uncommon::before, .monster .traits .item .uncommon::before, .hazard .traits .item .uncommon::before, .npc .traits .item .uncommon::before {
+  background-color: var(--uncommon) !important;
+}
+
+.statblock .traits .item .rare::before, .monster .traits .item .rare::before, .hazard .traits .item .rare::before, .npc .traits .item .rare::before {
+  background-color: var(--rare) !important;
+}
+
+.statblock .traits .special, .monster .traits .special, .hazard .traits .special, .npc .traits .special {
+  display: inline-block;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-left: 4px;
+}
+
+.statblock .traits .special::before, .monster .traits .special::before, .hazard .traits .special::before, .npc .traits .special::before {
+  content: '(';
+}
+
+.statblock .traits .special::after, .monster .traits .special::after, .hazard .traits .special::after, .npc .traits .special::after {
+  content: ')';
+}
+
+/* ICONS */
+i.icon {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 1.2em 1.2em;
+  height: 1.2em;
+  width: 1.2em;
+  vertical-align: middle;
+  /* Roles */
+  /* Stats */
+}
+
+i.icon.star-empty {
+  background-image: url("../img/icons/star-empty.svg");
+}
+
+i.icon.star-filled {
+  background-image: url("../img/icons/star-filled.svg");
+}
+
+i.icon.controller {
+  background-image: url("../img/icons/brain.svg");
+}
+
+i.icon.defender {
+  background-image: url("../img/icons/shield-half.svg");
+}
+
+i.icon.lurker {
+  background-image: url("../img/icons/moon.svg");
+}
+
+i.icon.scout {
+  background-image: url("../img/icons/eye-open.svg");
+}
+
+i.icon.striker {
+  background-image: url("../img/icons/flame.svg");
+}
+
+i.icon.supporter {
+  background-image: url("../img/icons/support.svg");
+}
+
+i.icon.save {
+  background-image: url("../img/icons/hexagon.svg");
+}
+
+i.icon.immunity, i.icon.ac {
+  background-image: url("../img/icons/shield-full.svg");
+}
+
+i.icon.hp {
+  background-image: url("../img/icons/heart.svg");
+}
+
+i.icon.init {
+  background-image: url("../img/icons/lightning.svg");
+}
+
+i.icon.perception {
+  background-image: url("../img/icons/eye-open.svg");
+}
+
+i.icon.stealth {
+  background-image: url("../img/icons/eye-closed.svg");
+}
+
+i.icon.atk {
+  background-image: url("../img/icons/crosshair.svg");
+}
+
+i.icon.dcs {
+  background-image: url("../img/icons/target.svg");
+}
+
+i.icon.dmg {
+  background-image: url("../img/icons/flame.svg");
+}
+
+i.icon.prof {
+  background-image: url("../img/icons/tools.svg");
+}
+
+i.icon.cr {
+  background-image: url("../img/icons/award.svg");
+}
+
+i.icon.speed {
+  background-image: url("../img/icons/footprints.svg");
+}
+
+i.icon.skill {
+  background-image: url("../img/icons/bulb.svg");
+}
+
+i.icon.threshold {
+  background-image: url("../img/icons/pulse.svg");
+}
+
+i.icon.vulnerable {
+  background-image: url("../img/icons/vulnerable.svg");
+}
+
+i.icon.resist {
+  background-image: url("../img/icons/shield-half.svg");
+}
+
+i.icon.senses {
+  background-image: url("../img/icons/bell.svg");
+}
+
+i.icon.language {
+  background-image: url("../img/icons/speech.svg");
+}
+
+.bg-redberry {
+  background-color: #980000;
+}
+
+.width-attr-fixed {
+  width: 55px;
+}
+
+.minwidth-375 {
+  min-width: 375px;
+}
+
+.minwidth-120 {
+  min-width: 120px;
+}
+
+.minwidth-100 {
+  min-width: 100px;
+}
+
+.minwidth-50 {
+  min-width: 50px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number]:not(.spinner) {
+  -moz-appearance: textfield;
+}
+
+#mainMenu a {
+  color: white;
+}
+
+#tableGallery-container {
+  background-color: #980000;
+  padding: 10px;
+}
+
+#tableGallery-container table {
+  border: 2px solid #343a40;
+}
+
+#tableGallery-container table thead th:hover {
+  cursor: pointer;
+  background-color: #606060;
+}
+
+#tableGallery-container table .loading {
+  background-color: whitesmoke;
+}
+
+#tableGallery-container table tbody tr:not(.loading) {
+  cursor: pointer;
+  color: #343a40;
+  background-color: whitesmoke;
+}
+
+#tableGallery-container table tbody tr:not(.loading):nth-child(even) {
+  background-color: silver;
+}
+
+#tableGallery-container table tbody tr:not(.loading):hover {
+  background-color: #a0a0a0;
+}
+
+@media only screen and (max-width: 991px) {
+  #statblockGallery > .row:first-child {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+    margin-bottom: 15px;
+  }
+  #statblockGallery > .row:first-child > div:nth-child(2) {
+    padding-bottom: 15px;
+  }
+}
+
+.feature-label-spacer {
+  display: inline-block;
+  height: 38px;
+}
+
+.feature-label-spacer::before {
+  content: "\00a0";
+}
+
+.spin {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 10px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #980000;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+/*# sourceMappingURL=style.css.map */

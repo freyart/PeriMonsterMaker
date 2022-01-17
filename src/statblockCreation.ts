@@ -108,8 +108,7 @@ function loadStatblock(statblock: Statblock){
     setValueIfNotEqual(input_perception, statblock.stats.perception, input_perception.placeholder)
     setValueIfNotEqual(input_stealth, statblock.stats.stealth, input_stealth.placeholder)
     setValueIfNotEqual(input_atk, statblock.stats.atk, input_atk.placeholder)
-    setValueIfNotEqual(input_dcLow, statblock.stats.dc_low, input_dcLow.placeholder)
-    setValueIfNotEqual(input_dcHigh, statblock.stats.dc_high, input_dcHigh.placeholder)
+    setValueIfNotEqual(input_dcLow, statblock.stats.dc, input_dcLow.placeholder)
     setValueIfNotEqual(input_dmg, statblock.stats.dmg, input_dmg.placeholder)
     setValueIfNotEqual(input_prof, statblock.stats.prof, input_prof.placeholder)
     setValueIfNotEqual(input_cr, statblock.stats.cr, input_cr.placeholder)
@@ -147,28 +146,27 @@ function getStats(){
     input_stealth.placeholder = String(output.passiveStealth)
     input_speed.placeholder = String(output.speed)
 
-    input_atk.placeholder = String(output.atk)
-    input_dcLow.placeholder = String(output.dcLow)
-    input_dcHigh.placeholder = String(output.dcHigh)
+    input_atk.placeholder = String(output.atkBonus)
+    input_dcLow.placeholder = String(output.dcBonus)
     input_dmg.placeholder = String(output.dmg)
     info_damage_avg.placeholder = String(output.dmg)
-    input_prof.placeholder = String(output.proficiency)
+    input_prof.placeholder = String(output.prof)
     input_cr.placeholder = String(output.cr)
     input_xp.placeholder = String(output.xp)
 
     statblockSortie.abilities = {
         strMod: output.strMod,
-        strDef: output.strDef,
+        strDef: output.strSave,
         dexMod: output.dexMod,
-        dexDef: output.dexDef,
+        dexDef: output.dexSave,
         conMod: output.conMod,
-        conDef: output.conDef,
+        conDef: output.conSave,
         intMod: output.intMod,
-        intDef: output.intDef,
+        intDef: output.intSave,
         wisMod: output.wisMod,
-        wisDef: output.wisDef,
+        wisDef: output.wisSave,
         chaMod: output.chaMod,
-        chaDef: output.chaDef,
+        chaDef: output.chaSave,
     }
 
     calculateDamage()
@@ -253,7 +251,7 @@ function getValuesForMonster():string[] {
 //GENERER LE CONTENU DES DROPDOWN LIST SELON LES ENUMS
 function initSelectLists(){
     getSelectByIdFromEnum<Rank>("rank", Rank, Rank.Grunt)
-    getSelectByIdFromEnum<Role>("role", Role, Role.None)
+    getSelectByIdFromEnum<Role>("role", Role, Role.Striker)
     getSelectByIdFromEnum<StatblockType>("type", StatblockType, StatblockType.Monster)
     getSelectByIdFromEnum<Size>("size", Size, Size.Medium)
     getSelectByIdFromEnum<Origin>("origin", Origin, Origin.Natural)
@@ -290,8 +288,7 @@ function prepareMonster() {
         perception: Number(getValueOrPlaceholder(input_perception)),
         stealth: Number(getValueOrPlaceholder(input_stealth)),
         atk: Number(getValueOrPlaceholder(input_atk)),
-        dc_low: Number(getValueOrPlaceholder(input_dcLow)),
-        dc_high: Number(getValueOrPlaceholder(input_dcHigh)),
+        dc: Number(getValueOrPlaceholder(input_dcLow)),
         dmg: Number(getValueOrPlaceholder(input_dmg)),
         prof: Number(getValueOrPlaceholder(input_prof)),
         cr: getValueOrPlaceholder(input_cr),

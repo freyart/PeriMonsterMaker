@@ -527,7 +527,6 @@ const input_stealth = getInputById("stealth");
 const input_speed = getInputById("speed");
 const input_atk = getInputById("atk");
 const input_dcLow = getInputById("dc-low");
-const input_dcHigh = getInputById("dc-high");
 const input_dmg = getInputById("dmg");
 const input_prof = getInputById("prof");
 const input_cr = getInputById("cr");
@@ -637,11 +636,9 @@ class Statblock {
             const keywords2 = document.createElement("div");
             keywords2.textContent = Rank[this.header.rank];
             keywords.appendChild(keywords2);
-            if (this.header.role != Role.None) {
-                const keywords3 = document.createElement("div");
-                keywords3.textContent = Role[this.header.role];
-                keywords.appendChild(keywords3);
-            }
+            const keywords3 = document.createElement("div");
+            keywords3.textContent = Role[this.header.role];
+            keywords.appendChild(keywords3);
             conteneur.appendChild(keywords);
         }
         return conteneur;
@@ -657,7 +654,7 @@ class Statblock {
             col1.appendChild(this.CreateLineStat("perception", "Passive Perc.", this.stats.perception));
             col1.appendChild(this.CreateLineStat("stealth", "Passive Stealth", this.stats.stealth));
             col2.appendChild(this.CreateLineStat("atk", "Atk Bonus", showPlusMinus(this.stats.atk)));
-            col2.appendChild(this.CreateLineStat("dcs", "Atk DCs", this.stats.dc_low + "-" + this.stats.dc_high));
+            col2.appendChild(this.CreateLineStat("dcs", "Atk DC", showPlusMinus(this.stats.dc)));
             col2.appendChild(this.CreateLineStat("dmg", "Damage", this.stats.dmg));
             col2.appendChild(this.CreateLineStat("prof", "Proficiency", showPlusMinus(this.stats.prof)));
             col2.appendChild(this.CreateLineStat("cr", "CR", this.stats.cr + " (" + this.stats.xp + " XP)"));
@@ -669,17 +666,26 @@ class Statblock {
     CreateAbilities() {
         const statblock = this.CreateDivWithClass("attributes");
         if (this.abilities != null) {
-            statblock.appendChild(this.CreateLineAttr("str", this.abilities.strMod, this.abilities.strDef));
-            statblock.appendChild(this.CreateLineAttr("dex", this.abilities.dexMod, this.abilities.dexDef));
-            statblock.appendChild(this.CreateLineAttr("con", this.abilities.conMod, this.abilities.conDef));
-            statblock.appendChild(this.CreateLineAttr("int", this.abilities.intMod, this.abilities.intDef));
-            statblock.appendChild(this.CreateLineAttr("wis", this.abilities.wisMod, this.abilities.wisDef));
-            statblock.appendChild(this.CreateLineAttr("cha", this.abilities.chaMod, this.abilities.chaDef));
+            statblock.appendChild(this.CreateLineAttr("str", this.abilities.strMod));
+            statblock.appendChild(this.CreateLineAttr("dex", this.abilities.dexMod));
+            statblock.appendChild(this.CreateLineAttr("con", this.abilities.conMod));
+            statblock.appendChild(this.CreateLineAttr("int", this.abilities.intMod));
+            statblock.appendChild(this.CreateLineAttr("wis", this.abilities.wisMod));
+            statblock.appendChild(this.CreateLineAttr("cha", this.abilities.chaMod));
         }
         return statblock;
     }
     CreateOtherStats() {
         const autres = this.CreateDivWithClass("autres");
+        const abil = this.abilities;
+        if (abil.strMod != abil.strDef ||
+            abil.dexMod != abil.dexDef ||
+            abil.conMod != abil.conDef ||
+            abil.intMod != abil.intDef ||
+            abil.wisMod != abil.wisDef ||
+            abil.chaMod != abil.chaDef) {
+            autres.appendChild(this.CreateLineStatAutre("save", "Saves", this.GenererValeurSaves()));
+        }
         if (this.statsAutres != null) {
             if (this.statsAutres.movement)
                 autres.appendChild(this.CreateLineStatAutre("speed", "Speed", this.statsAutres.movement));
@@ -748,19 +754,14 @@ class Statblock {
         element.innerHTML += endsWithDot(String(value));
         return element;
     }
-    CreateLineAttr(ability, strMod, strDef) {
+    CreateLineAttr(ability, statMod) {
         const attribute = document.createElement("div");
         const score = document.createElement("div");
         const mod = document.createElement("div");
-        const def = document.createElement("div");
         score.textContent = ability;
-        mod.appendChild(this.CreateIconFor(ability));
-        mod.innerHTML += showNullsAsQuadra(strMod);
-        def.appendChild(this.CreateIconFor("def"));
-        def.innerHTML += showNullsAsQuadra(strDef);
+        mod.innerHTML = this.ShowAbilityScore(statMod);
         attribute.appendChild(score);
         attribute.appendChild(mod);
-        attribute.appendChild(def);
         return attribute;
     }
     CreateFeatureSection(name) {
@@ -782,6 +783,32 @@ class Statblock {
         item.appendChild(name);
         item.innerHTML += feature.description;
         return item;
+    }
+    ShowAbilityScore(ability) {
+        if (ability === null) {
+            return "0";
+        }
+        else {
+            const score = Math.max(1, (ability + 5) * 2);
+            return `${score}&nbsp;(${showPlusMinus(ability)})`;
+        }
+    }
+    GenererValeurSaves() {
+        let saves = Array();
+        const abi = this.abilities;
+        if (abi.strMod != abi.strDef)
+            saves.push("Str&nbsp;" + showPlusMinus(abi.strDef));
+        if (abi.dexMod != abi.dexDef)
+            saves.push("Dex&nbsp;" + showPlusMinus(abi.dexDef));
+        if (abi.conMod != abi.conDef)
+            saves.push("Con&nbsp;" + showPlusMinus(abi.conDef));
+        if (abi.intMod != abi.intDef)
+            saves.push("Int&nbsp;" + showPlusMinus(abi.intDef));
+        if (abi.wisMod != abi.wisDef)
+            saves.push("Wis&nbsp;" + showPlusMinus(abi.wisDef));
+        if (abi.chaMod != abi.chaDef)
+            saves.push("Cha&nbsp;" + showPlusMinus(abi.chaDef));
+        return saves.join(", ");
     }
 }
 class StatBlockWithPath extends Statblock {
@@ -882,8 +909,7 @@ function loadStatblock(statblock) {
     setValueIfNotEqual(input_perception, statblock.stats.perception, input_perception.placeholder);
     setValueIfNotEqual(input_stealth, statblock.stats.stealth, input_stealth.placeholder);
     setValueIfNotEqual(input_atk, statblock.stats.atk, input_atk.placeholder);
-    setValueIfNotEqual(input_dcLow, statblock.stats.dc_low, input_dcLow.placeholder);
-    setValueIfNotEqual(input_dcHigh, statblock.stats.dc_high, input_dcHigh.placeholder);
+    setValueIfNotEqual(input_dcLow, statblock.stats.dc, input_dcLow.placeholder);
     setValueIfNotEqual(input_dmg, statblock.stats.dmg, input_dmg.placeholder);
     setValueIfNotEqual(input_prof, statblock.stats.prof, input_prof.placeholder);
     setValueIfNotEqual(input_cr, statblock.stats.cr, input_cr.placeholder);
@@ -913,27 +939,26 @@ function getStats() {
     input_perception.placeholder = String(output.passivePercept);
     input_stealth.placeholder = String(output.passiveStealth);
     input_speed.placeholder = String(output.speed);
-    input_atk.placeholder = String(output.atk);
-    input_dcLow.placeholder = String(output.dcLow);
-    input_dcHigh.placeholder = String(output.dcHigh);
+    input_atk.placeholder = String(output.atkBonus);
+    input_dcLow.placeholder = String(output.dcBonus);
     input_dmg.placeholder = String(output.dmg);
     info_damage_avg.placeholder = String(output.dmg);
-    input_prof.placeholder = String(output.proficiency);
+    input_prof.placeholder = String(output.prof);
     input_cr.placeholder = String(output.cr);
     input_xp.placeholder = String(output.xp);
     statblockSortie.abilities = {
         strMod: output.strMod,
-        strDef: output.strDef,
+        strDef: output.strSave,
         dexMod: output.dexMod,
-        dexDef: output.dexDef,
+        dexDef: output.dexSave,
         conMod: output.conMod,
-        conDef: output.conDef,
+        conDef: output.conSave,
         intMod: output.intMod,
-        intDef: output.intDef,
+        intDef: output.intSave,
         wisMod: output.wisMod,
-        wisDef: output.wisDef,
+        wisDef: output.wisSave,
         chaMod: output.chaMod,
-        chaDef: output.chaDef,
+        chaDef: output.chaSave,
     };
     calculateDamage();
 }
@@ -1010,7 +1035,7 @@ function getValuesForMonster() {
 //GENERER LE CONTENU DES DROPDOWN LIST SELON LES ENUMS
 function initSelectLists() {
     getSelectByIdFromEnum("rank", Rank, Rank.Grunt);
-    getSelectByIdFromEnum("role", Role, Role.None);
+    getSelectByIdFromEnum("role", Role, Role.Striker);
     getSelectByIdFromEnum("type", StatblockType, StatblockType.Monster);
     getSelectByIdFromEnum("size", Size, Size.Medium);
     getSelectByIdFromEnum("origin", Origin, Origin.Natural);
@@ -1044,8 +1069,7 @@ function prepareMonster() {
         perception: Number(getValueOrPlaceholder(input_perception)),
         stealth: Number(getValueOrPlaceholder(input_stealth)),
         atk: Number(getValueOrPlaceholder(input_atk)),
-        dc_low: Number(getValueOrPlaceholder(input_dcLow)),
-        dc_high: Number(getValueOrPlaceholder(input_dcHigh)),
+        dc: Number(getValueOrPlaceholder(input_dcLow)),
         dmg: Number(getValueOrPlaceholder(input_dmg)),
         prof: Number(getValueOrPlaceholder(input_prof)),
         cr: getValueOrPlaceholder(input_cr),
@@ -1180,63 +1204,63 @@ class MonsterInput {
 class MonsterOutput {
     constructor() {
         this.strMod = null;
-        this.strDef = null;
+        this.strSave = null;
         this.dexMod = null;
-        this.dexDef = null;
+        this.dexSave = null;
         this.conMod = null;
-        this.conDef = null;
+        this.conSave = null;
         this.intMod = null;
-        this.intDef = null;
+        this.intSave = null;
         this.wisMod = null;
-        this.wisDef = null;
+        this.wisSave = null;
         this.chaMod = null;
-        this.chaDef = null;
+        this.chaSave = null;
     }
 }
 class StatsGenerator {
     constructor() {
         this.stats = new Array();
-        this.stats.push(new StatLine(0, 12, 16, 2, 9, 1, 1, [4, 2, 0], [3, 2, 1, 1, 0, -1], 25));
-        this.stats.push(new StatLine(1, 12, 21, 3, 10, 2, 2, [5, 3, 0], [3, 2, 1, 1, 0, -1], 50));
-        this.stats.push(new StatLine(2, 12, 26, 3, 10, 4, 2, [5, 3, 0], [3, 2, 1, 1, 0, -1], 112.5));
-        this.stats.push(new StatLine(3, 12, 31, 3, 10, 5, 2, [5, 3, 0], [3, 2, 1, 1, 0, -1], 175));
-        this.stats.push(new StatLine(4, 13, 40, 4, 11, 8, 2, [6, 3, 1], [4, 3, 2, 1, 1, 0], 275));
-        this.stats.push(new StatLine(5, 14, 47, 5, 12, 10, 3, [7, 4, 1], [4, 3, 2, 1, 1, 0], 450));
-        this.stats.push(new StatLine(6, 14, 54, 5, 12, 12, 3, [7, 4, 1], [4, 3, 2, 1, 1, 0], 575));
-        this.stats.push(new StatLine(7, 14, 61, 5, 12, 14, 3, [7, 4, 1], [4, 3, 2, 1, 1, 0], 725));
-        this.stats.push(new StatLine(8, 15, 75, 6, 13, 18, 3, [8, 5, 1], [5, 3, 2, 2, 1, 0], 975));
-        this.stats.push(new StatLine(9, 16, 82, 7, 14, 20, 4, [9, 5, 2], [5, 3, 2, 2, 1, 0], 1250));
-        this.stats.push(new StatLine(10, 16, 90, 7, 14, 23, 4, [9, 5, 2], [5, 3, 2, 2, 1, 0], 1475));
-        this.stats.push(new StatLine(11, 16, 95, 7, 14, 25, 4, [9, 5, 2], [5, 3, 2, 2, 1, 0], 1800));
-        this.stats.push(new StatLine(12, 16, 109, 8, 15, 30, 4, [10, 6, 2], [6, 4, 3, 2, 1, 0], 2100));
-        this.stats.push(new StatLine(13, 17, 114, 9, 16, 33, 5, [11, 7, 2], [6, 4, 3, 2, 1, 0], 2500));
-        this.stats.push(new StatLine(14, 17, 120, 9, 16, 35, 5, [11, 7, 2], [6, 4, 3, 2, 1, 0], 2875));
-        this.stats.push(new StatLine(15, 17, 125, 9, 16, 38, 5, [11, 7, 2], [6, 4, 3, 2, 1, 0], 3250));
-        this.stats.push(new StatLine(16, 28, 141, 10, 16, 40, 5, [12, 7, 3], [7, 5, 3, 2, 2, 1], 3750));
-        this.stats.push(new StatLine(17, 19, 147, 11, 17, 43, 6, [13, 8, 3], [7, 5, 3, 2, 2, 1], 4500));
-        this.stats.push(new StatLine(18, 19, 152, 11, 17, 45, 6, [13, 8, 3], [7, 5, 3, 2, 2, 1], 5000));
-        this.stats.push(new StatLine(19, 19, 158, 11, 17, 48, 6, [13, 8, 3], [7, 5, 3, 2, 2, 1], 5500));
-        this.stats.push(new StatLine(20, 20, 176, 12, 18, 50, 6, [14, 9, 3], [8, 6, 5, 4, 2, 1], 6250));
-        this.stats.push(new StatLine(21, 20, 182, 13, 19, 53, 7, [15, 9, 4], [8, 6, 5, 4, 2, 1], 8250));
-        this.stats.push(new StatLine(22, 20, 188, 13, 19, 55, 7, [15, 9, 4], [8, 6, 5, 4, 2, 1], 10250));
-        this.stats.push(new StatLine(23, 20, 195, 13, 19, 58, 7, [15, 9, 4], [8, 6, 5, 4, 2, 1], 12500));
-        this.stats.push(new StatLine(24, 21, 214, 14, 20, 60, 7, [16, 10, 4], [9, 6, 5, 4, 2, 1], 15500));
+        this.stats.push(new StatLine(0, 10, 16, 1, 9, 1, 1, { high: 3, med: 1, low: 0 }, 25));
+        this.stats.push(new StatLine(1, 11, 22, 2, 10, 2, 2, { high: 3, med: 1, low: 0 }, 50));
+        this.stats.push(new StatLine(2, 12, 28, 2, 10, 4, 2, { high: 3, med: 1, low: 0 }, 112.5));
+        this.stats.push(new StatLine(3, 12, 34, 2, 10, 8, 2, { high: 3, med: 1, low: 0 }, 175));
+        this.stats.push(new StatLine(4, 12, 40, 2, 10, 10, 2, { high: 4, med: 1, low: 0 }, 275));
+        this.stats.push(new StatLine(5, 13, 48, 3, 11, 13, 3, { high: 4, med: 1, low: 0 }, 450));
+        this.stats.push(new StatLine(6, 14, 57, 3, 11, 15, 3, { high: 4, med: 2, low: 0 }, 575));
+        this.stats.push(new StatLine(7, 14, 66, 3, 11, 18, 3, { high: 4, med: 2, low: 0 }, 725));
+        this.stats.push(new StatLine(8, 14, 75, 3, 11, 20, 3, { high: 5, med: 2, low: 0 }, 975));
+        this.stats.push(new StatLine(9, 15, 83, 4, 12, 25, 4, { high: 5, med: 2, low: 0 }, 1250));
+        this.stats.push(new StatLine(10, 15, 92, 4, 12, 28, 4, { high: 5, med: 2, low: 0 }, 1475));
+        this.stats.push(new StatLine(11, 15, 98, 4, 12, 31, 4, { high: 5, med: 2, low: 0 }, 1800));
+        this.stats.push(new StatLine(12, 16, 104, 4, 12, 34, 4, { high: 5, med: 3, low: 1 }, 2100));
+        this.stats.push(new StatLine(13, 17, 111, 5, 13, 37, 5, { high: 5, med: 3, low: 1 }, 2500));
+        this.stats.push(new StatLine(14, 17, 117, 5, 13, 39, 5, { high: 5, med: 3, low: 1 }, 2875));
+        this.stats.push(new StatLine(15, 17, 124, 5, 13, 47, 5, { high: 5, med: 3, low: 1 }, 3250));
+        this.stats.push(new StatLine(16, 17, 130, 5, 13, 50, 5, { high: 6, med: 3, low: 1 }, 3750));
+        this.stats.push(new StatLine(17, 18, 137, 6, 14, 53, 6, { high: 6, med: 3, low: 1 }, 4500));
+        this.stats.push(new StatLine(18, 18, 144, 6, 14, 56, 6, { high: 6, med: 4, low: 1 }, 5000));
+        this.stats.push(new StatLine(19, 18, 151, 6, 14, 59, 6, { high: 6, med: 4, low: 1 }, 5500));
+        this.stats.push(new StatLine(20, 19, 158, 6, 14, 63, 6, { high: 6, med: 4, low: 1 }, 6250));
+        this.stats.push(new StatLine(21, 20, 165, 7, 15, 72, 7, { high: 6, med: 4, low: 1 }, 8250));
+        this.stats.push(new StatLine(22, 20, 172, 7, 15, 76, 7, { high: 6, med: 4, low: 1 }, 10250));
+        this.stats.push(new StatLine(23, 20, 180, 7, 15, 79, 7, { high: 6, med: 4, low: 1 }, 12500));
+        this.stats.push(new StatLine(24, 20, 187, 7, 15, 83, 7, { high: 7, med: 5, low: 2 }, 15500));
         this.ranks = new Array();
-        this.ranks.push(new RankLine(Rank.Minion, 0.2, -2, 0, false, 0.75, 0.25));
-        this.ranks.push(new RankLine(Rank.Grunt, 1, 0, 0, false, 1, 1));
-        this.ranks.push(new RankLine(Rank.Elite, 2, 2, 0, true, 1.1, 2));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 3"], 3, 2, 2, true, 1.2, 3));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 4"], 4, 2, 2, true, 1.2, 4));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 5"], 5, 2, 2, true, 1.2, 5));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 6"], 6, 2, 2, true, 1.2, 6));
+        this.ranks.push(new RankLine(Rank.Minion, 0.2, -1, -1, TrainedValue.Untrained, 0.75, 0.25));
+        this.ranks.push(new RankLine(Rank.Grunt, 1, 0, 0, TrainedValue.Untrained, 1, 1));
+        this.ranks.push(new RankLine(Rank.Elite, 2, 1, 1, TrainedValue.Half, 1.1, 2));
+        this.ranks.push(new RankLine(Rank["Paragon vs. 3"], 3, 2, 2, TrainedValue.Trained, 1.2, 3));
+        this.ranks.push(new RankLine(Rank["Paragon vs. 4"], 4, 2, 2, TrainedValue.Trained, 1.2, 4));
+        this.ranks.push(new RankLine(Rank["Paragon vs. 5"], 5, 2, 2, TrainedValue.Trained, 1.2, 5));
+        this.ranks.push(new RankLine(Rank["Paragon vs. 6"], 6, 2, 2, TrainedValue.Trained, 1.2, 6));
+        this.ranks.push(new RankLine(Rank["Paragon vs. 7"], 7, 2, 2, TrainedValue.Trained, 1.2, 7));
         this.roles = new Array();
-        this.roles.push(new RoleLine(Role.None, 0, 0, 1, 0, 0, 1, 0, false, false, false));
-        this.roles.push(new RoleLine(Role.Controller, 2, 1, 1, 0, 0, 0.75, 0, false, false, true));
-        this.roles.push(new RoleLine(Role.Defender, 4, 2, 0.75, 0, 0, 1, -5, false, false, false));
-        this.roles.push(new RoleLine(Role.Lurker, -4, -2, 0.75, 3, 3, 1.5, 5, false, true, false));
-        this.roles.push(new RoleLine(Role.Scout, 0, 0, 1, -1, -1, 0.75, 10, true, true, false));
-        this.roles.push(new RoleLine(Role.Striker, -2, -1, 1.25, 2, 2, 1.25, 0, false, false, false));
-        this.roles.push(new RoleLine(Role.Supporter, 0, 0, 1.5, -2, -2, 1, 0, false, false, true));
+        this.roles.push(new RoleLine(Role.Controller, 2, 1, 1, -1, -1, 0.5, true, 0, false, false));
+        this.roles.push(new RoleLine(Role.Defender, 4, 0.75, 2, 0, 0, 0.5, false, -5, false, false));
+        this.roles.push(new RoleLine(Role.Lurker, -4, 0.75, -2, +2, +1, 1.25, false, 5, false, true));
+        this.roles.push(new RoleLine(Role.Scout, -2, 1, -1, -1, -1, 0.75, false, 10, true, true));
+        this.roles.push(new RoleLine(Role.Striker, 0, 1, 0, 0, 0, 1, false, 0, false, false));
+        this.roles.push(new RoleLine(Role.Supporter, -1, 1.25, -1, -1, -1, 0.75, true, 0, true, false));
     }
     getMonsterStats(input) {
         var _a, _b, _c, _d;
@@ -1244,24 +1268,29 @@ class StatsGenerator {
         const baseStats = this.getStats(input.level);
         const role = this.getRole(input.role);
         const rank = this.getRank(input.rank);
-        output.ac = baseStats.ac + role.acMod + rank.acSavesMod;
-        output.atk = baseStats.atk + role.atkMod + rank.atkDcsMod;
-        output.hp = Math.floor(baseStats.hp * role.hpMult * rank.hpMult);
+        output.ac = baseStats.baseAc + role.acMod + rank.acMod;
+        output.hp = Math.floor(baseStats.baseHp * role.hpMult * rank.hpMult);
+        output.atkBonus = baseStats.atkMod + role.atkMod;
+        output.dcBonus = baseStats.dcMod + role.dcMod;
         output.speed = (_a = input.baseSpeed) !== null && _a !== void 0 ? _a : 30 + role.speedMod;
-        output.proficiency = baseStats.prof;
-        output.dcLow = baseStats.dcLow + role.dcMod + rank.atkDcsMod;
-        output.dcHigh = output.dcLow + 2;
-        output.dmg = Math.round(baseStats.minionDmg * role.dmgMult);
+        output.prof = baseStats.prof;
+        output.dmg = Math.round(baseStats.baseDmg * rank.dmgMult * role.dmgMult);
         this.getAbilityModifiers(input, output);
         output.initMod = (_b = output.dexMod) !== null && _b !== void 0 ? _b : 0;
         output.passiveStealth = 10 + ((_c = output.dexMod) !== null && _c !== void 0 ? _c : 0);
         output.passivePercept = 10 + ((_d = output.wisMod) !== null && _d !== void 0 ? _d : 0);
-        if (this.getRole(input.role).trainedInit || this.getRank(input.rank).trainedInit)
-            output.initMod += this.getStats(input.level).prof;
+        if (this.getRole(input.role).trainedInit)
+            output.initMod += baseStats.prof;
+        if (this.getRank(input.rank).initMod == TrainedValue.Trained) {
+            output.initMod += baseStats.prof;
+        }
+        else if (this.getRank(input.rank).initMod == TrainedValue.Half) {
+            output.initMod += baseStats.halfProf;
+        }
         if (this.getRole(input.role).trainedStealth)
-            output.passiveStealth += this.getStats(input.level).prof;
+            output.passiveStealth += baseStats.prof;
         if (this.getRole(input.role).trainedPerception)
-            output.passivePercept += this.getStats(input.level).prof;
+            output.passivePercept += baseStats.prof;
         let xpTable = new ExperienceToChallengeRating();
         output.xp = Math.floor(baseStats.xp * rank.xpMult);
         output.cr = xpTable.getCrFromXp(output.xp);
@@ -1303,63 +1332,84 @@ class StatsGenerator {
     }
     getAbilityModifiers(input, output) {
         output.strMod = null;
-        output.strDef = null;
+        output.strSave = null;
         output.dexMod = null;
-        output.dexDef = null;
+        output.dexSave = null;
         output.conMod = null;
-        output.conDef = null;
+        output.conSave = null;
         output.intMod = null;
-        output.intDef = null;
+        output.intSave = null;
         output.wisMod = null;
-        output.wisDef = null;
+        output.wisSave = null;
         output.chaMod = null;
-        output.chaDef = null;
+        output.chaSave = null;
         input.abilityOrder.forEach((value, index) => {
             this.attribuerAbilityMod(input.level, input.rank, input.role, output, value, index);
         });
     }
-    attribuerAbilityMod(level, rank, role, output, ability, order) {
-        let saveOrder = function (x) {
-            if (x === 0)
-                return 0;
-            else if (x < 3)
-                return 1;
-            else
-                return 2;
-        };
+    getSaveModifier(level, saveType) {
+        const profBonus = this.getStats(level).prof;
+        if (saveType == TrainedValue.Trained) {
+            return profBonus;
+        }
+        else if (saveType === TrainedValue.Half) {
+            return Math.floor(this.getStats(level).prof);
+        }
+        else {
+            return 0;
+        }
+    }
+    attribuerAbilityMod(level, rank, role, output, ability, index) {
+        const baseStats = this.getStats(level);
         switch (ability) {
             case Ability.Strength:
-                output.strMod = this.getStats(level).abilityMods[order];
-                output.strDef = this.getStats(level).saves[saveOrder(order)] + this.getRank(rank).acSavesMod + this.getRole(role).saveMod;
+                output.strMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod;
+                output.strSave = output.strMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index);
                 break;
             case Ability.Dexterity:
-                output.dexMod = this.getStats(level).abilityMods[order];
-                output.dexDef = this.getStats(level).saves[saveOrder(order)] + this.getRank(rank).acSavesMod + this.getRole(role).saveMod;
+                output.dexMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod;
+                output.dexSave = output.dexMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index);
                 break;
             case Ability.Constitution:
-                output.conMod = this.getStats(level).abilityMods[order];
-                output.conDef = this.getStats(level).saves[saveOrder(order)] + this.getRank(rank).acSavesMod + this.getRole(role).saveMod;
+                output.conMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod;
+                output.conSave = output.conMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index);
                 break;
             case Ability.Intelligence:
-                output.intMod = this.getStats(level).abilityMods[order];
-                output.intDef = this.getStats(level).saves[saveOrder(order)] + this.getRank(rank).acSavesMod + this.getRole(role).saveMod;
+                output.intMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod;
+                output.intSave = output.intMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index);
                 break;
             case Ability.Wisdom:
-                output.wisMod = this.getStats(level).abilityMods[order];
-                output.wisDef = this.getStats(level).saves[saveOrder(order)] + this.getRank(rank).acSavesMod + this.getRole(role).saveMod;
+                output.wisMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod;
+                output.wisSave = output.wisMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index);
                 break;
             case Ability.Charisma:
-                output.chaMod = this.getStats(level).abilityMods[order];
-                output.chaDef = this.getStats(level).saves[saveOrder(order)] + this.getRank(rank).acSavesMod + this.getRole(role).saveMod;
+                output.chaMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod;
+                output.chaSave = output.chaMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index);
                 break;
             default:
                 console.error("attribut inconnu");
                 break;
         }
     }
+    getAbilityModFromOrder(abilityMods, index) {
+        if (index === 0)
+            return abilityMods.high;
+        else if (index === 1 || index === 2)
+            return abilityMods.med;
+        else
+            return abilityMods.low;
+    }
+    getProfBonusFromOrder(level, index) {
+        if (index === 0)
+            return this.getStats(level).prof;
+        else if (index === 1 || index === 2)
+            return this.getStats(level).halfProf;
+        else
+            return 0;
+    }
 }
 class RoleLine {
-    constructor(role, acMod, saveMod, hpMult, atkMod, dcMod, dmgMult, speedMod, percept, stealth, init) {
+    constructor(role, acMod, hpMult, saveMod, atkMod, dcMod, dmgMult, init, speedMod, percept, stealth) {
         this.role = role;
         this.acMod = acMod;
         this.saveMod = saveMod;
@@ -1374,25 +1424,26 @@ class RoleLine {
     }
 }
 class RankLine {
-    constructor(rank, hpMult, acSavesMod, atkDcsMod, trainedInit, dmgMult, xpMult) {
+    constructor(rank, hpMult, acMod, attrMod, trainedInit, dmgMult, xpMult) {
         this.rank = rank;
         this.hpMult = hpMult;
-        this.acSavesMod = acSavesMod;
-        this.atkDcsMod = atkDcsMod;
-        this.trainedInit = trainedInit;
+        this.acMod = acMod;
+        this.attrMod = attrMod;
+        this.initMod = trainedInit;
         this.dmgMult = dmgMult;
         this.xpMult = xpMult;
     }
 }
 class StatLine {
-    constructor(level, ac, hp, atk, dcLow, dmg, prof, abilityMods, xp) {
+    constructor(level, baseAc, baseHp, atkMod, dcMod, baseDmg, prof, abilityMods, xp) {
         this.level = level;
-        this.ac = ac;
-        this.hp = hp;
-        this.atk = atk;
-        this.dcLow = dcLow;
-        this.dmg = dmg;
+        this.baseAc = baseAc;
+        this.baseHp = baseHp;
+        this.atkMod = atkMod;
+        this.dcMod = dcMod;
+        this.baseDmg = baseDmg;
         this.prof = prof;
+        this.halfProf = Math.floor(prof / 2);
         this.abilityMods = abilityMods;
         this.xp = xp;
     }
@@ -1475,10 +1526,10 @@ var Rank;
     Rank[Rank["Paragon vs. 4"] = 4] = "Paragon vs. 4";
     Rank[Rank["Paragon vs. 5"] = 5] = "Paragon vs. 5";
     Rank[Rank["Paragon vs. 6"] = 6] = "Paragon vs. 6";
+    Rank[Rank["Paragon vs. 7"] = 7] = "Paragon vs. 7";
 })(Rank || (Rank = {}));
 var Role;
 (function (Role) {
-    Role[Role["None"] = 0] = "None";
     Role[Role["Controller"] = 1] = "Controller";
     Role[Role["Defender"] = 2] = "Defender";
     Role[Role["Lurker"] = 3] = "Lurker";
@@ -1500,7 +1551,7 @@ var TrainedValue;
 (function (TrainedValue) {
     TrainedValue[TrainedValue["Untrained"] = 0] = "Untrained";
     TrainedValue[TrainedValue["Half"] = 1] = "Half";
-    TrainedValue[TrainedValue["Proficient"] = 2] = "Proficient";
+    TrainedValue[TrainedValue["Trained"] = 2] = "Trained";
 })(TrainedValue || (TrainedValue = {}));
 var StatblockType;
 (function (StatblockType) {
