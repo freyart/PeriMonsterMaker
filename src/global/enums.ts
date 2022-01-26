@@ -10,10 +10,10 @@ enum Rank {
     "Paragon vs. 4" = 4,
     "Paragon vs. 5" = 5,
     "Paragon vs. 6" = 6,
+    "Paragon vs. 7" = 7,
 }
 
 enum Role {
-    None = 0,
     Controller = 1,
     Defender = 2,
     Lurker = 3,
@@ -30,6 +30,18 @@ enum Ability {
     Intelligence = 'int',
     Wisdom = 'wis',
     Charisma = 'cha',
+}
+
+enum AbilityAttr {
+    Low,
+    Med,
+    High,
+}
+
+enum TrainedValue {
+    Untrained,
+    Half,
+    Trained,
 }
 
 enum StatblockType {

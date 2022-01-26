@@ -6,6 +6,12 @@ type Feature = {
     description: string
 }
 
+type HighMedLow = {
+    high: number
+    med: number
+    low: number
+}
+
 class RoleLine {
     readonly role: Role
     readonly acMod: number
@@ -19,7 +25,7 @@ class RoleLine {
     readonly trainedStealth: boolean
     readonly trainedInit: boolean
 
-    constructor(role: Role, acMod: number, saveMod: number, hpMult: number, atkMod: number, dcMod: number, dmgMult: number, speedMod: number, percept: boolean, stealth: boolean, init: boolean) {
+    constructor(role: Role, acMod: number, hpMult: number, saveMod: number, atkMod: number, dcMod: number, dmgMult: number, init: boolean, speedMod: number, percept: boolean, stealth: boolean) {
         this.role = role
         this.acMod = acMod
         this.saveMod = saveMod
@@ -37,18 +43,18 @@ class RoleLine {
 class RankLine {
     readonly rank: Rank
     readonly hpMult: number
-    readonly acSavesMod: number
-    readonly atkDcsMod: number
-    readonly trainedInit: boolean
+    readonly acMod: number
+    readonly attrMod: number
+    readonly initMod: TrainedValue
     readonly dmgMult: number
     readonly xpMult: number
 
-    constructor(rank: Rank, hpMult: number, acSavesMod: number, atkDcsMod: number, trainedInit: boolean, dmgMult: number, xpMult: number) {
+    constructor(rank: Rank, hpMult: number, acMod: number, attrMod: number, trainedInit: TrainedValue, dmgMult: number, xpMult: number) {
         this.rank = rank
         this.hpMult = hpMult
-        this.acSavesMod = acSavesMod
-        this.atkDcsMod = atkDcsMod
-        this.trainedInit = trainedInit
+        this.acMod = acMod
+        this.attrMod = attrMod
+        this.initMod = trainedInit
         this.dmgMult = dmgMult
         this.xpMult = xpMult
     }
@@ -56,29 +62,25 @@ class RankLine {
 
 class StatLine {
     readonly level: number
-    readonly ac: number
-    readonly hp: number
-    readonly atk: number
-    readonly dcLow: number
-    readonly dcHigh: number
-    readonly dmg: number
-    readonly minionDmg: number
+    readonly baseAc: number
+    readonly baseHp: number
+    readonly atkMod: number
+    readonly dcMod: number
+    readonly baseDmg: number
     readonly prof: number
-    readonly saves: number[]
-    readonly abilityMods: number[]
+    readonly halfProf: number
+    readonly abilityMods: HighMedLow
     readonly xp: number
 
-    constructor(level: number, ac: number, hp: number, atk: number, dcLow: number, dcHigh: number, dmg: number, minionDmg: number, prof: number, saves: number[], abilityMods: number[], xp: number) {
+    constructor(level: number, baseAc: number, baseHp: number, atkMod: number, dcMod: number, baseDmg: number, prof: number, abilityMods: HighMedLow, xp: number) {
         this.level = level
-        this.ac = ac
-        this.hp = hp
-        this.atk = atk
-        this.dcLow = dcLow
-        this.dcHigh = dcHigh
-        this.dmg = dmg
-        this.minionDmg = minionDmg
+        this.baseAc = baseAc
+        this.baseHp = baseHp
+        this.atkMod = atkMod
+        this.dcMod = dcMod
+        this.baseDmg = baseDmg
         this.prof = prof
-        this.saves = saves
+        this.halfProf = Math.floor(prof/2)
         this.abilityMods = abilityMods
         this.xp = xp
     }
