@@ -32,6 +32,12 @@ enum Ability {
     Charisma = 'cha',
 }
 
+enum AbilityAttr {
+    Low,
+    Med,
+    High,
+}
+
 enum TrainedValue {
     Untrained,
     Half,

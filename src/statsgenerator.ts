@@ -3,15 +3,17 @@ class MonsterInput {
     level: number
     rank: Rank
     role: Role
-    abilityOrder: string[]
+    abilityOrder: AbilityAttr[]
+    abilitiiesOverrides: number[]
     baseSpeed: number
 
-    constructor( level:number, rank:Rank, role:Role, abilityOrder:string[], speed:number = 30){
+    constructor( level:number, rank:Rank, role:Role, abilityOrder:AbilityAttr[], abilitiesOverrides:number[], speed:number = 30){
         this.level= level
         this.rank = rank
         this.role = role
         this.abilityOrder = abilityOrder
         this.baseSpeed = speed
+        this.abilitiiesOverrides = abilitiesOverrides
     }
 }
 
@@ -28,32 +30,21 @@ class MonsterOutput {
     prof: number | undefined
     cr: string | undefined
     xp: number | undefined
-    strMod: number | null
-    strSave: number | null
-    dexMod: number | null
-    dexSave: number | null
-    conMod: number | null
-    conSave: number | null
-    intMod: number | null
-    intSave: number | null
-    wisMod: number | null
-    wisSave: number | null
-    chaMod: number | null
-    chaSave: number | null
+    strScore: number
+    strSaveMod: number
+    dexScore: number
+    dexSaveMod: number
+    conScore: number
+    conSaveMod: number
+    intScore: number
+    intSaveMod: number
+    wisScore: number
+    wisSaveMod: number
+    chaScore: number
+    chaSaveMod: number
 
     constructor(){
-        this.strMod = null
-        this.strSave = null
-        this.dexMod = null
-        this.dexSave = null
-        this.conMod = null
-        this.conSave = null
-        this.intMod = null
-        this.intSave = null
-        this.wisMod = null
-        this.wisSave = null
-        this.chaMod = null
-        this.chaSave = null       
+
     }
 }
 
@@ -117,7 +108,7 @@ class StatsGenerator {
         const rank = this.getRank(input.rank)
         
         output.ac = baseStats.baseAc + role.acMod + rank.acMod
-        output.hp = Math.floor(baseStats.baseHp * role.hpMult * rank.hpMult)
+        output.hp = Math.round(baseStats.baseHp * role.hpMult * rank.hpMult)
         
         output.atkBonus = baseStats.atkMod + role.atkMod
         output.dcBonus = baseStats.dcMod + role.dcMod
@@ -127,9 +118,9 @@ class StatsGenerator {
         
         this.getAbilityModifiers(input, output)
         
-        output.initMod = output.dexMod ?? 0
-        output.passiveStealth = 10 + (output.dexMod ?? 0)
-        output.passivePercept = 10 + (output.wisMod ?? 0)
+        output.initMod = getAbilityModFromScore(input.abilitiiesOverrides[1] ?? output.dexScore) ?? 0
+        output.passiveStealth = 10 + getAbilityModFromScore(input.abilitiiesOverrides[1] ?? output.dexScore) ?? 0
+        output.passivePercept = 10 + getAbilityModFromScore(input.abilitiiesOverrides[4] ?? output.wisScore) ?? 0
 
         if(this.getRole(input.role).trainedInit)
             output.initMod += baseStats.prof
@@ -154,22 +145,6 @@ class StatsGenerator {
         output.cr = xpTable.getCrFromXp(output.xp)
 
         return output
-    }
-
-    getAttributeOrder(str: number, dex: number, con: number, int: number, wis: number, cha: number): string[] {
-        const characteristics: TextNumberPair[] = new Array
-        characteristics.push({"text":"str", "value":str})
-        characteristics.push({"text":"dex", "value":dex})
-        characteristics.push({"text":"con", "value":con})
-        characteristics.push({"text":"int", "value":int})
-        characteristics.push({"text":"wis", "value":wis})
-        characteristics.push({"text":"cha", "value":cha})
-
-        characteristics.sort((attr1, attr2) => {
-            return attr2.value - attr1.value
-        })
-
-        return Array.from(characteristics.map(x => x.text))
     }
 
     private getStats(lvl: number): StatLine {
@@ -197,87 +172,59 @@ class StatsGenerator {
     }
 
     private getAbilityModifiers(input:MonsterInput, output:MonsterOutput):void{
-        output.strMod = null
-        output.strSave = null
-        output.dexMod = null
-        output.dexSave = null
-        output.conMod = null
-        output.conSave = null
-        output.intMod = null
-        output.intSave = null
-        output.wisMod = null
-        output.wisSave = null
-        output.chaMod = null
-        output.chaSave = null
-
         input.abilityOrder.forEach( (value, index) => {
-            this.attribuerAbilityMod(input.level, input.rank, input.role, output, <Ability>value, index)
+            const values = this.attribuerAbilities(input.level, input.rank, input.role, <AbilityAttr>value)
+            switch (index) {
+                case 0:
+                    output.strScore = values.abilityScore
+                    output.strSaveMod = values.save
+                    break;
+                case 1:
+                    output.dexScore = values.abilityScore
+                    output.dexSaveMod = values.save
+                    break;
+                case 2:
+                    output.conScore = values.abilityScore
+                    output.conSaveMod = values.save
+                    break;
+                case 3:
+                    output.intScore = values.abilityScore
+                    output.intSaveMod = values.save
+                    break;
+                case 4:
+                    output.wisScore = values.abilityScore
+                    output.wisSaveMod = values.save
+                    break;
+                case 5:
+                    output.chaScore = values.abilityScore
+                    output.chaSaveMod = values.save
+                    break;
+            }
         })
-        
     }
 
-    private getSaveModifier(level: number, saveType: TrainedValue): number{
-        const profBonus = this.getStats(level).prof
-        if(saveType == TrainedValue.Trained) {
-            return profBonus
-        }
-        else if (saveType === TrainedValue.Half){
-            return Math.floor(this.getStats(level).prof)
-        }
-        else {
-            return 0
-        }
-    }
-
-    private attribuerAbilityMod(level: number, rank: Rank, role: Role, output:MonsterOutput, ability:Ability, index: number):void {
+    private attribuerAbilities(level: number, rank: Rank, role: Role, abilityValue: AbilityAttr):{abilityScore: number, save: number} {
         const baseStats = this.getStats(level)
-        switch (ability) {
-            case Ability.Strength:
-                output.strMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod
-                output.strSave = output.strMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index)
+        let mod, save, prof: number
+
+        switch (abilityValue) {
+            case AbilityAttr.High:
+                mod = baseStats.abilityMods.high
+                prof = baseStats.prof
                 break;
-            case Ability.Dexterity:
-                output.dexMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod
-                output.dexSave = output.dexMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index)
-                break;
-            case Ability.Constitution:
-                output.conMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod
-                output.conSave = output.conMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index)
-                break;
-            case Ability.Intelligence:
-                output.intMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod
-                output.intSave = output.intMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index)
-                break;
-            case Ability.Wisdom:
-                output.wisMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod
-                output.wisSave = output.wisMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index)
-                break;
-            case Ability.Charisma:
-                output.chaMod = this.getAbilityModFromOrder(baseStats.abilityMods, index) + this.getRank(rank).attrMod
-                output.chaSave = output.chaMod + this.getRole(role).saveMod + this.getProfBonusFromOrder(level, index)
+            case AbilityAttr.Med:
+                mod = baseStats.abilityMods.med
+                prof = baseStats.halfProf
                 break;       
-           default:
-               console.error("attribut inconnu");
-               break;
-       }
-    }
+            default:
+                mod = baseStats.abilityMods.low
+                prof = 0
+                break;
+        }
 
-    private getAbilityModFromOrder(abilityMods: HighMedLow, index: number) : number {
-        if(index === 0)
-            return abilityMods.high
-        else if(index === 1 || index === 2)
-            return abilityMods.med
-        else
-            return abilityMods.low
+        mod = mod + this.getRank(rank).attrMod
+        save = 0 + this.getRole(role).saveMod + prof
+        
+        return {abilityScore: getAbilityScoreFromMod(mod), save: save}
     }
-
-    private getProfBonusFromOrder(level: number, index: number) : number {
-        if(index === 0)
-        return this.getStats(level).prof
-    else if(index === 1 || index === 2)
-        return this.getStats(level).halfProf
-    else
-        return 0
-    }
-
 }

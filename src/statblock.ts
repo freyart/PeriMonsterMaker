@@ -24,18 +24,19 @@ type StatblockStats = {
 }
 
 type StatblockAbilities = {
-    strMod: number | null
+    strScore: number
     strDef: number | null
-    dexMod: number | null
+    dexScore: number
     dexDef: number | null
-    conMod: number | null
+    conScore: number
     conDef: number | null
-    intMod: number | null
+    intScore: number
     intDef: number | null
-    wisMod: number | null
+    wisScore: number
     wisDef: number | null
-    chaMod: number | null
+    chaScore: number
     chaDef: number | null
+    abilityRanks: AbilityAttr[]
 }
 
 type StatblockStatsAutres = {
@@ -200,12 +201,12 @@ class Statblock {
     private CreateAbilities() : Element {
         const statblock = this.CreateDivWithClass("attributes") 
         if(this.abilities != null){
-            statblock.appendChild(this.CreateLineAttr("str", this.abilities.strMod))
-            statblock.appendChild(this.CreateLineAttr("dex", this.abilities.dexMod))
-            statblock.appendChild(this.CreateLineAttr("con", this.abilities.conMod))
-            statblock.appendChild(this.CreateLineAttr("int", this.abilities.intMod))
-            statblock.appendChild(this.CreateLineAttr("wis", this.abilities.wisMod))
-            statblock.appendChild(this.CreateLineAttr("cha", this.abilities.chaMod))
+            statblock.appendChild(this.CreateLineAttr("str", this.abilities.strScore))
+            statblock.appendChild(this.CreateLineAttr("dex", this.abilities.dexScore))
+            statblock.appendChild(this.CreateLineAttr("con", this.abilities.conScore))
+            statblock.appendChild(this.CreateLineAttr("int", this.abilities.intScore))
+            statblock.appendChild(this.CreateLineAttr("wis", this.abilities.wisScore))
+            statblock.appendChild(this.CreateLineAttr("cha", this.abilities.chaScore))
         }
 
         return statblock
@@ -213,17 +214,16 @@ class Statblock {
 
     private CreateOtherStats() : Element {
         const autres = this.CreateDivWithClass("autres") 
-        const abil = this.abilities
-        if(abil.strMod != abil.strDef || 
-            abil.dexMod != abil.dexDef ||
-            abil.conMod != abil.conDef ||
-            abil.intMod != abil.intDef ||
-            abil.wisMod != abil.wisDef ||
-            abil.chaMod != abil.chaDef ) {
+        const abi = this.abilities
+        if( !(abi.strScore === 0 || abi.strDef === 0) || 
+            !(abi.dexScore === 0 || abi.dexDef === 0) || 
+            !(abi.conScore === 0 || abi.conDef === 0) || 
+            !(abi.intScore === 0 || abi.intDef === 0) || 
+            !(abi.wisScore === 0 || abi.wisDef === 0) || 
+            !(abi.chaScore === 0 || abi.chaDef === 0)) {
                 autres.appendChild(this.CreateLineStatAutre(
                     "save", "Saves", this.GenererValeurSaves()))
             }
-
 
         if(this.statsAutres != null){
             if(this.statsAutres.movement) autres.appendChild(this.CreateLineStatAutre(
@@ -302,13 +302,18 @@ class Statblock {
         return element
     }
 
-    private CreateLineAttr(ability: string, statMod: number | null): Element {
+    private CreateLineAttr(ability: string, statScore: number): Element {
         const attribute = document.createElement("div")
         const score = document.createElement("div")
         const mod = document.createElement("div")
 
         score.textContent = ability
-        mod.innerHTML = this.ShowAbilityScore(statMod)
+        if(statScore === 0) {
+            mod.innerHTML = "0"
+        }
+        else {
+            mod.innerHTML = `${statScore}&nbsp;(${showPlusMinus(getAbilityModFromScore(statScore))})`
+        }
 
         attribute.appendChild(score)
         attribute.appendChild(mod)
@@ -339,27 +344,28 @@ class Statblock {
         return item
     }
 
-    private ShowAbilityScore(ability:number|null) : string {
-        if(ability === null){
-            return "0"
-        }
-        else {
-            const score = Math.max(1, (ability + 5 ) * 2)
-            return `${score}&nbsp;(${showPlusMinus(ability)})` 
-        }
-    }
-
     private GenererValeurSaves(): string {
         let saves: string[] = Array()
         const abi = this.abilities
 
-        if(abi.strMod != abi.strDef) saves.push("Str&nbsp;" + showPlusMinus(abi.strDef))
-        if(abi.dexMod != abi.dexDef) saves.push("Dex&nbsp;" + showPlusMinus(abi.dexDef))
-        if(abi.conMod != abi.conDef) saves.push("Con&nbsp;" + showPlusMinus(abi.conDef))
-        if(abi.intMod != abi.intDef) saves.push("Int&nbsp;" + showPlusMinus(abi.intDef))
-        if(abi.wisMod != abi.wisDef) saves.push("Wis&nbsp;" + showPlusMinus(abi.wisDef))
-        if(abi.chaMod != abi.chaDef) saves.push("Cha&nbsp;" + showPlusMinus(abi.chaDef))
-
+        if(!(abi.strScore === 0 || abi.strDef === 0)) {
+            saves.push("Str&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.strScore) + abi.strDef))
+        }
+        if(!(abi.dexScore === 0 || abi.dexDef === 0)) {
+            saves.push("Dex&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.dexScore) + abi.dexDef))
+        }
+        if(!(abi.conScore === 0 || abi.conDef === 0)) {
+            saves.push("Con&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.conScore) + abi.conDef))
+        }
+        if(!(abi.intScore === 0 || abi.intDef === 0)) {
+            saves.push("Int&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.intScore) + abi.intDef))
+        }
+        if(!(abi.wisScore === 0 || abi.wisDef === 0)) {
+            saves.push("Wis&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.wisScore) + abi.wisDef))
+        }
+        if(!(abi.chaScore === 0 || abi.chaDef === 0)) {
+            saves.push("Cha&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.chaScore) + abi.chaDef))
+        }
         return saves.join(", ")
     }
 }

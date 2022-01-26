@@ -54,3 +54,11 @@ const input_dImmune = getInputById("dimmune")
 const input_cImmune = getInputById("cimmune")
 const input_senses = getInputById("senses")
 const input_languages = getInputById("languages")
+
+/* ABILITIES */
+const input_str = getInputById("attr1score")
+const input_dex = getInputById("attr2score")
+const input_con = getInputById("attr3score")
+const input_int = getInputById("attr4score")
+const input_wis = getInputById("attr5score")
+const input_cha = getInputById("attr6score")

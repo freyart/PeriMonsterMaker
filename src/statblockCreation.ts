@@ -4,7 +4,6 @@ let statblockSortie : Statblock
 function initMonsterMakerForm(){ 
     featureManager = new FeatureManager()
     statblockSortie = new Statblock()
-    initAbilityScoresDistribution()
     initAbilityScoresSelection()
     initSelectLists()
     infoPannelInit()
@@ -36,7 +35,6 @@ function resetStatblock() {
             select.value= ""
         })
         initAbilityScoresSelection()
-        initAbilityScoresDistribution()
         featureManager.RemoveAllFeatures()
         featureManager.AddFeatureLine()
         updatePreview()
@@ -85,21 +83,21 @@ function loadStatblock(statblock: Statblock){
     input_senses.value = statblock.statsAutres.senses
     input_languages.value = statblock.statsAutres.languages
 
-    //Importer ability Scores
-    const monsterMaker = new StatsGenerator();
-    const statOrder = monsterMaker.getAttributeOrder(
-        statblock.abilities.strMod, statblock.abilities.dexMod, statblock.abilities.conMod, statblock.abilities.intMod, statblock.abilities.wisMod, statblock.abilities.chaMod)
-    
     for (let i = 1; i <= 6; i++) {
-        let attribute = getInputById("attr" + i)
-        if(statOrder.length > 0) {
-            attribute.value = statOrder.shift()
-        }
-        else 
-            attribute.value = ""
+        getInputById("attr"+i).value = String(statblock.abilities.abilityRanks[i-1])
     }
 
+    //Importer ability Scores
+    const monsterMaker = new StatsGenerator();
     getStats()
+
+    //Importer ability overrides
+    setValueIfNotEqual(input_str, statblock.abilities.strScore, input_str.placeholder)
+    setValueIfNotEqual(input_dex, statblock.abilities.dexScore, input_dex.placeholder)
+    setValueIfNotEqual(input_con, statblock.abilities.conScore, input_con.placeholder)
+    setValueIfNotEqual(input_int, statblock.abilities.intScore, input_int.placeholder)
+    setValueIfNotEqual(input_wis, statblock.abilities.wisScore, input_wis.placeholder)
+    setValueIfNotEqual(input_cha, statblock.abilities.chaScore, input_cha.placeholder)
 
     //Importer overrides si différents des stats calculées
     setValueIfNotEqual(input_ac, statblock.stats.ac, input_ac.placeholder)
@@ -113,6 +111,8 @@ function loadStatblock(statblock: Statblock){
     setValueIfNotEqual(input_prof, statblock.stats.prof, input_prof.placeholder)
     setValueIfNotEqual(input_cr, statblock.stats.cr, input_cr.placeholder)
     setValueIfNotEqual(input_xp, statblock.stats.xp, input_xp.placeholder)
+
+
 
     featureManager.RemoveAllFeatures()
     statblock.features.forEach(feature => {
@@ -133,10 +133,10 @@ function getStats(){
     const level:number = Number(input_level.value)
     const rank:Rank = <Rank>Number(input_rank.value)
     const role:Role = <Role>Number(input_role.value)
-    const attributes:string[] = getValuesForMonster()
+    const attributes:AbilityAttr[] = getAttributesOrderForMonster()
     const monsterMaker = new StatsGenerator();
 
-    const input = new MonsterInput(level, rank, role, attributes);
+    const input = new MonsterInput(level, rank, role, attributes, this.getAttributesForMonster());
     const output = monsterMaker.getMonsterStats(input)
 
     input_ac.placeholder = String(output.ac)
@@ -155,18 +155,30 @@ function getStats(){
     input_xp.placeholder = String(output.xp)
 
     statblockSortie.abilities = {
-        strMod: output.strMod,
-        strDef: output.strSave,
-        dexMod: output.dexMod,
-        dexDef: output.dexSave,
-        conMod: output.conMod,
-        conDef: output.conSave,
-        intMod: output.intMod,
-        intDef: output.intSave,
-        wisMod: output.wisMod,
-        wisDef: output.wisSave,
-        chaMod: output.chaMod,
-        chaDef: output.chaSave,
+        strScore: output.strScore,
+        strDef: output.strSaveMod,
+        dexScore: output.dexScore,
+        dexDef: output.dexSaveMod,
+        conScore: output.conScore,
+        conDef: output.conSaveMod,
+        intScore: output.intScore,
+        intDef: output.intSaveMod,
+        wisScore: output.wisScore,
+        wisDef: output.wisSaveMod,
+        chaScore: output.chaScore,
+        chaDef: output.chaSaveMod,
+        abilityRanks: attributes
+    }
+
+    for (let i = 1; i <= 6; i++) {
+        let attributeInput = getInputById("attr" + i)
+        let attributeScoreInput = getInputById("attr" + i + "score")
+        if(attributeInput.value != ""){
+            attributeScoreInput.placeholder = String(getAbilityScoreFor(i))
+        }
+        else {
+            attributeScoreInput.placeholder = ""
+        }
     }
 
     calculateDamage()
@@ -176,73 +188,37 @@ function getStats(){
 function initAbilityScoresSelection() {
     for (let i = 1; i <= 6; i++) {
         let element = getInputById("attr" + i)
-        element.value=""
+        element.value="0"
         element.addEventListener('change', () => {
             abilityScoreOnChange(i)
         })
     }
 }
 
-function initAbilityScoresDistribution() {
-    for (let i = 1; i <= 6; i++) {
-        let element = getInputById("attr" + i + "null")
-        element.checked = false
-        element.disabled = false
-        enableDisableConnectedElement(i, false)
-        element.addEventListener('change', () => {
-            enableDisableConnectedElement(i, element.checked)
-            previousAbilityCheckChange(i, element.checked)
-        })
-    }
-}
-
-function previousAbilityCheckChange(indexClicked: number, isChecked: boolean){
-    for (let i = 1; i <= 6; i++) {
-        if(i > indexClicked ){
-            let element = getInputById("attr" + i + "null")
-            if(isChecked){
-                element.checked = true
-                element.disabled = true
-                enableDisableConnectedElement(i, true)
-            } 
-            else if(i === indexClicked+1) {
-                element.disabled = false
-            }
-        }
-    }
-}
-
-function enableDisableConnectedElement(index:number, desactivate:boolean) {
-    let element = getInputById("attr" + index)
-    if(desactivate){
-        element.value = ""
-    } 
-    element.disabled = desactivate
-}
-
 function abilityScoreOnChange(indexChanged: number) {
-    let element = getInputById("attr" + indexChanged)
-    const value = element.value
-    if(value != null) {
-        for (let i = 1; i <= 6; i++) {
-            if(i != indexChanged){
-                let selection = getInputById("attr" + i)
-                if(selection.value === element.value){
-                    selection.value = ""
-                }
-            }
-        }
-    }
     getStats()
 }
 
-function getValuesForMonster():string[] {
-    let attributes = new Array()
+function getAttributesOrderForMonster():AbilityAttr[] {
+    let order : AbilityAttr[] = new Array()
     for (let i = 1; i <= 6; i++) {
         let attribute = getInputById("attr" + i)
-        let nullifier = getInputById("attr" + i + "null")
-        if(!nullifier.checked && attribute.value != ""){
-            attributes.push(attribute.value)
+        if(attribute.value != ""){
+            order.push(<AbilityAttr>Number(attribute.value))
+        }
+    }
+    return order
+}
+
+function getAttributesForMonster():Number[] {
+    let attributes : (Number|null)[] = new Array()
+    for (let i = 1; i <= 6; i++) {
+        let attribute = getInputById("attr" + i + "score")
+        if(attribute.value === ""){
+            attributes.push(null)
+        } 
+        else {
+            attributes.push(Number(attribute.value))
         }
     }
     return attributes
@@ -257,12 +233,12 @@ function initSelectLists(){
     getSelectByIdFromEnum<Origin>("origin", Origin, Origin.Natural)
     getSelectByIdFromEnum<Form>("form", Form, Form.Humanoid)
     
-    getSelectByIdFromEnum<Ability>("attr1", Ability, Ability.None) 
-    getSelectByIdFromEnum<Ability>("attr2", Ability, Ability.None) 
-    getSelectByIdFromEnum<Ability>("attr3", Ability, Ability.None) 
-    getSelectByIdFromEnum<Ability>("attr4", Ability, Ability.None) 
-    getSelectByIdFromEnum<Ability>("attr5", Ability, Ability.None) 
-    getSelectByIdFromEnum<Ability>("attr6", Ability, Ability.None) 
+    getSelectByIdFromEnum<AbilityAttr>("attr1", AbilityAttr, AbilityAttr.Low) 
+    getSelectByIdFromEnum<AbilityAttr>("attr2", AbilityAttr, AbilityAttr.Low) 
+    getSelectByIdFromEnum<AbilityAttr>("attr3", AbilityAttr, AbilityAttr.Low) 
+    getSelectByIdFromEnum<AbilityAttr>("attr4", AbilityAttr, AbilityAttr.Low) 
+    getSelectByIdFromEnum<AbilityAttr>("attr5", AbilityAttr, AbilityAttr.Low) 
+    getSelectByIdFromEnum<AbilityAttr>("attr6", AbilityAttr, AbilityAttr.Low) 
 
     getSelectByIdFromEnum<DiceType>("info-dam-dice", DiceType, DiceType.D6) 
 }
@@ -294,6 +270,23 @@ function prepareMonster() {
         cr: getValueOrPlaceholder(input_cr),
         xp: Number(getValueOrPlaceholder(input_xp))
     }
+
+    statblockSortie.abilities = {
+        strScore: Number(getValueOrPlaceholder(getInputById("attr1score"))),
+        dexScore: Number(getValueOrPlaceholder(getInputById("attr2score"))),
+        conScore: Number(getValueOrPlaceholder(getInputById("attr3score"))),
+        intScore: Number(getValueOrPlaceholder(getInputById("attr4score"))),
+        wisScore: Number(getValueOrPlaceholder(getInputById("attr5score"))),
+        chaScore: Number(getValueOrPlaceholder(getInputById("attr6score"))),
+        strDef: statblockSortie.abilities.strDef,
+        dexDef: statblockSortie.abilities.dexDef,
+        conDef: statblockSortie.abilities.conDef,
+        intDef: statblockSortie.abilities.intDef,
+        wisDef: statblockSortie.abilities.wisDef,
+        chaDef: statblockSortie.abilities.chaDef,
+        abilityRanks: statblockSortie.abilities.abilityRanks
+    }
+
     statblockSortie.statsAutres = {
         movement: input_movement.value,
         skills: input_skills.value,
@@ -361,3 +354,29 @@ function quickTemplateClick(idTemplate: string){
     featureManager.AddFeatureLineFrom(featureManager.templates[idTemplate])
 }
 
+function getAbilityScoreFor(order: number): number{
+    let score: number = 0
+    switch (order) {
+        case 1:
+            score = statblockSortie.abilities.strScore
+            break;
+        case 2:
+            score = statblockSortie.abilities.dexScore
+            break;
+        case 3:
+            score = statblockSortie.abilities.conScore
+            break;   
+        case 4:
+            score = statblockSortie.abilities.intScore
+            break;   
+        case 5:
+            score = statblockSortie.abilities.wisScore
+            break;   
+        case 6:
+            score = statblockSortie.abilities.chaScore
+            break;   
+        default:
+            break;
+    }
+    return score
+}
