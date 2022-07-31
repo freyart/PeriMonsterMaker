@@ -22,8 +22,8 @@ class MonsterOutput {
     hp: number | undefined
     initMod: number | undefined
     passivePercept: number | undefined
-    passiveStealth: number | undefined
     speed: number | undefined
+    tSaves: number | undefined
     atkBonus: number | undefined
     dcBonus: number | undefined
     dmg: number | undefined
@@ -55,49 +55,55 @@ class StatsGenerator {
 
     constructor() {
         this.stats = new Array()
-        this.stats.push(new StatLine(0, 10, 16, 1, 9,   1, 1, {high:3,med:1,low:0}, 25))
-        this.stats.push(new StatLine(1, 11, 22, 2, 10,  2, 2, {high:3,med:1,low:0}, 50))
-        this.stats.push(new StatLine(2, 12, 28, 2, 10,  4, 2, {high:3,med:1,low:0}, 112.5))
-        this.stats.push(new StatLine(3, 12, 34, 2, 10,  8, 2, {high:3,med:1,low:0}, 175))
-        this.stats.push(new StatLine(4, 12, 40, 2, 10, 10, 2, {high:4,med:1,low:0}, 275))
-        this.stats.push(new StatLine(5, 13, 48, 3, 11, 13, 3, {high:4,med:1,low:0}, 450))
-        this.stats.push(new StatLine(6, 14, 57, 3, 11, 15, 3, {high:4,med:2,low:0}, 575))
-        this.stats.push(new StatLine(7, 14, 66, 3, 11, 18, 3, {high:4,med:2,low:0}, 725))
-        this.stats.push(new StatLine(8, 14, 75, 3, 11, 20, 3, {high:5,med:2,low:0}, 975))
-        this.stats.push(new StatLine(9, 15, 83, 4, 12, 25, 4, {high:5,med:2,low:0}, 1250))
-        this.stats.push(new StatLine(10,15, 92, 4, 12, 28, 4, {high:5,med:2,low:0}, 1475))
-        this.stats.push(new StatLine(11,15, 98, 4, 12, 31, 4, {high:5,med:2,low:0}, 1800))
-        this.stats.push(new StatLine(12,16,104, 4, 12, 34, 4, {high:5,med:3,low:1}, 2100))
-        this.stats.push(new StatLine(13,17,111, 5, 13, 37, 5, {high:5,med:3,low:1}, 2500))
-        this.stats.push(new StatLine(14,17,117, 5, 13, 39, 5, {high:5,med:3,low:1}, 2875))
-        this.stats.push(new StatLine(15,17,124, 5, 13, 47, 5, {high:5,med:3,low:1}, 3250))
-        this.stats.push(new StatLine(16,17,130, 5, 13, 50, 5, {high:6,med:3,low:1}, 3750))
-        this.stats.push(new StatLine(17,18,137, 6, 14, 53, 6, {high:6,med:3,low:1}, 4500))
-        this.stats.push(new StatLine(18,18,144, 6, 14, 56, 6, {high:6,med:4,low:1}, 5000))
-        this.stats.push(new StatLine(19,18,151, 6, 14, 59, 6, {high:6,med:4,low:1}, 5500))
-        this.stats.push(new StatLine(20,19,158, 6, 14, 63, 6, {high:6,med:4,low:1}, 6250))
-        this.stats.push(new StatLine(21,20,165, 7, 15, 72, 7, {high:6,med:4,low:1}, 8250))
-        this.stats.push(new StatLine(22,20,172, 7, 15, 76, 7, {high:6,med:4,low:1}, 10250))
-        this.stats.push(new StatLine(23,20,180, 7, 15, 79, 7, {high:6,med:4,low:1}, 12500))
-        this.stats.push(new StatLine(24,20,187, 7, 15, 83, 7, {high:7,med:5,low:2}, 15500))
+        this.stats.push(new StatLine(0, 25))
+        this.stats.push(new StatLine(1, 50))
+        this.stats.push(new StatLine(2, 112.5))
+        this.stats.push(new StatLine(3, 175))
+        this.stats.push(new StatLine(4, 275))
+        this.stats.push(new StatLine(5, 450))
+        this.stats.push(new StatLine(6, 575))
+        this.stats.push(new StatLine(7, 725))
+        this.stats.push(new StatLine(8, 975))
+        this.stats.push(new StatLine(9, 1250))
+        this.stats.push(new StatLine(10, 1475))
+        this.stats.push(new StatLine(11, 1800))
+        this.stats.push(new StatLine(12, 2100))
+        this.stats.push(new StatLine(13, 2500))
+        this.stats.push(new StatLine(14, 2875))
+        this.stats.push(new StatLine(15, 3250))
+        this.stats.push(new StatLine(16, 3750))
+        this.stats.push(new StatLine(17, 4500))
+        this.stats.push(new StatLine(18, 5000))
+        this.stats.push(new StatLine(19, 5500))
+        this.stats.push(new StatLine(20, 6250))
+        this.stats.push(new StatLine(21, 8250))
+        this.stats.push(new StatLine(22, 10250))
+        this.stats.push(new StatLine(23, 12500))
+        this.stats.push(new StatLine(24, 15500))
+        this.stats.push(new StatLine(25, 18750))
+        this.stats.push(new StatLine(26, 22500))
+        this.stats.push(new StatLine(27, 26250))
+        this.stats.push(new StatLine(28, 30000))
+        this.stats.push(new StatLine(29, 33750))
+        this.stats.push(new StatLine(30, 38750))
 
         this.ranks = new Array()
-        this.ranks.push(new RankLine(Rank.Minion, 0.2, -1, -1, TrainedValue.Untrained, 0.75, 0.25))
-        this.ranks.push(new RankLine(Rank.Grunt, 1, 0, 0, TrainedValue.Untrained, 1, 1))
-        this.ranks.push(new RankLine(Rank.Elite, 2, 1, 1, TrainedValue.Half, 1.1, 2))
-        this.ranks.push(new RankLine(Rank["Paragon vs. 3"], 3, 2, 2, TrainedValue.Trained, 1.2, 3))
-        this.ranks.push(new RankLine(Rank["Paragon vs. 4"], 4, 2, 2, TrainedValue.Trained, 1.2, 4))
-        this.ranks.push(new RankLine(Rank["Paragon vs. 5"], 5, 2, 2, TrainedValue.Trained, 1.2, 5))
-        this.ranks.push(new RankLine(Rank["Paragon vs. 6"], 6, 2, 2, TrainedValue.Trained, 1.2, 6))
-        this.ranks.push(new RankLine(Rank["Paragon vs. 7"], 7, 2, 2, TrainedValue.Trained, 1.2, 7))
+        this.ranks.push(new RankLine(Rank.Minion, 0.2, 0, 0, false, 0.75, 0.25, 1))
+        this.ranks.push(new RankLine(Rank.Grunt, 1, 0, 0, false, 1, 1, 2))
+        this.ranks.push(new RankLine(Rank.Elite, 2, 1, 1, true, 1.1, 2, 3))
+        this.ranks.push(new RankLine(Rank["Paragon T3"], 3, 2, 2, true, 1.2, 3, 3))
+        this.ranks.push(new RankLine(Rank["Paragon T4"], 4, 2, 2, true, 1.2, 4, 3))
+        this.ranks.push(new RankLine(Rank["Paragon T5"], 5, 2, 2, true, 1.2, 5, 3))
+        this.ranks.push(new RankLine(Rank["Paragon T6"], 6, 2, 2, true, 1.2, 6, 3))
+        this.ranks.push(new RankLine(Rank["Paragon T7"], 7, 2, 2, true, 1.2, 7, 3))
 
         this.roles = new Array()
-        this.roles.push(new RoleLine(Role.Controller, 2, 1, 1, -1, -1, 0.5, true, 0, false, false))
-        this.roles.push(new RoleLine(Role.Defender, 4, 0.75, 2, 0, 0, 0.5, false, -5, false, false))
-        this.roles.push(new RoleLine(Role.Lurker, -4, 0.75, -2, +2, +1, 1.25, false, 5, false, true))
-        this.roles.push(new RoleLine(Role.Scout, -2, 1, -1, -1, -1, 0.75, false, 10, true, true))
-        this.roles.push(new RoleLine(Role.Striker, 0, 1, 0, 0, 0, 1, false, 0, false, false))
-        this.roles.push(new RoleLine(Role.Supporter, -1, 1.25, -1, -1, -1, 0.75, true, 0, true, false))
+        this.roles.push(new RoleLine(Role.Controller, true, 0, 2, 1, 0, 0.75, false, false))
+        this.roles.push(new RoleLine(Role.Defender, false, -5, 4, 0.75, 1, 0.75, false, false ))
+        this.roles.push(new RoleLine(Role.Lurker, false, 0, -4, 0.75, -1, 1.25, false, true))
+        this.roles.push(new RoleLine(Role.Skirmisher, false, 5, -2, 0.75, 0, 1, true, false ))
+        this.roles.push(new RoleLine(Role.Striker, false, 0, 0, 1, 0, 1, false, false))
+        this.roles.push(new RoleLine(Role.Supporter, true, 0, 0, 1.25, 0, 0.75, false, false))
     }
 
     getMonsterStats(input: MonsterInput): MonsterOutput {
@@ -106,38 +112,31 @@ class StatsGenerator {
         const baseStats = this.getStats(input.level)
         const role = this.getRole(input.role)
         const rank = this.getRank(input.rank)
+        const lvl = input.level
         
-        output.ac = baseStats.baseAc + role.acMod + rank.acMod
-        output.hp = Math.round(baseStats.baseHp * role.hpMult * rank.hpMult)
+        output.ac = 12 + Math.floor(lvl/4) + role.acMod + rank.acMod
         
-        output.atkBonus = baseStats.atkMod + role.atkMod
-        output.dcBonus = baseStats.dcMod + role.dcMod
+        output.prof = 1 + Math.floor((lvl + 3) / 4)
+        output.atkBonus = output.prof
+        output.dcBonus = 8 + output.prof
+        output.hp = Math.round((16 + lvl * 7) * role.hpMult * rank.hpMult)
+        output.dmg = Math.max(1, Math.round((lvl * 3) * rank.dmgMult * role.dmgMult))
+        output.tSaves = rank.tSaves + role.tSaves
         output.speed = input.baseSpeed??30 + role.speedMod
-        output.prof = baseStats.prof
-        output.dmg = Math.round(baseStats.baseDmg * rank.dmgMult * role.dmgMult)
         
         this.getAbilityModifiers(input, output)
         
         output.initMod = getAbilityModFromScore(input.abilitiiesOverrides[1] ?? output.dexScore) ?? 0
-        output.passiveStealth = 10 + getAbilityModFromScore(input.abilitiiesOverrides[1] ?? output.dexScore) ?? 0
         output.passivePercept = 10 + getAbilityModFromScore(input.abilitiiesOverrides[4] ?? output.wisScore) ?? 0
 
-        if(this.getRole(input.role).trainedInit)
-            output.initMod += baseStats.prof
+        if(this.getRole(input.role).initBonus)
+            output.initMod += output.prof
         
-        if(this.getRank(input.rank).initMod == TrainedValue.Trained)
-        {
-            output.initMod += baseStats.prof
-        }
-        else if(this.getRank(input.rank).initMod == TrainedValue.Half){
-            output.initMod += baseStats.halfProf
-        }
-
-        if(this.getRole(input.role).trainedStealth) 
-            output.passiveStealth += baseStats.prof
+        if(this.getRank(input.rank).initBonus)
+            output.initMod += output.prof
 
         if(this.getRole(input.role).trainedPerception)
-            output.passivePercept += baseStats.prof
+            output.passivePercept += output.prof
 
         
         let xpTable = new ExperienceToChallengeRating()
@@ -210,20 +209,17 @@ class StatsGenerator {
         switch (abilityValue) {
             case AbilityAttr.High:
                 mod = baseStats.abilityMods.high
-                prof = baseStats.prof
                 break;
-            case AbilityAttr.Med:
-                mod = baseStats.abilityMods.med
-                prof = baseStats.halfProf
+            case AbilityAttr.Mid:
+                mod = baseStats.abilityMods.mid
                 break;       
             default:
                 mod = baseStats.abilityMods.low
-                prof = 0
                 break;
         }
 
         mod = mod + this.getRank(rank).attrMod
-        save = 0 + this.getRole(role).saveMod + prof
+        save = 0
         
         return {abilityScore: getAbilityScoreFromMod(mod), save: save}
     }

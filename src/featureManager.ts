@@ -293,14 +293,54 @@ class FeatureManager{
         description: "<em>Utility:</em> range 30 ft., two friendly creatures. <em>Effect:</em> the creature gains advantage on saving throws. This effect ends at the start of your next turn." })
 
         /* ARCHETYPES */
-        listeTemplates.push({ name:"Spell", type: FeatureType.Action, rarity: FeatureRarity.Common, particularity: "", 
+        listeTemplates.push({ name:"Cantrip", type: FeatureType.Action, rarity: FeatureRarity.Common, particularity: "", 
         description: "<em>Spell:</em> Cantrip, School, VSM|CR <[verbal, somatic, material, concentration, ritual]. <em>Ranged: </em> +X to hit, range 60 ft., one target. <em>Hit:</em> 0 (1d4 + 0) slashing damage." })
         
+        listeTemplates.push({ name:"Spell: Call Lightning", type: FeatureType.Action, rarity: FeatureRarity.Uncommon, particularity: "1/sr", 
+        description: "<em>Spell:</em> 3rd-level, Evocation, VS. <em>Save: </em> DC 17 vs DEX, a 10 ft. radius circle centered on a point within 30 ft. of you, all targets. <em>Hit:</em> 30 (4d12 + 4) lightning damage. <em>Miss:</em> half damage." })
+
+        listeTemplates.push({ name: "Summoner", type: FeatureType.Action, rarity: FeatureRarity.Rare,
+        particularity: "2 SP/lr",
+        description: 
+`<em>Utility:</em> range 30 ft. (does not require line of sight), 1-8 humanoid corpses. You spend SP to reanimate the targeted corpses as 6th-level undead creatures. These creatures act after your turn and obey your commands for up to 1 hour, at which point they revert to humanoid corpses.
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <strong>1 SP:</strong> 4 Minions<br>
+            <strong>1 SP:</strong> 1 Grunt<br>
+            <strong>2 SP:</strong> 8 Minions
+        </div>
+        <div class="col">
+            <strong>2 SP:</strong> 4 Minions, 1 Grunt<br>
+            <strong>2 SP:</strong> 2 Grunts<br>
+            <strong>2 SP:</strong> 1 Elite
+        </div>
+    </div>
+</div>
+`})
+        listeTemplates.push({ name: "Swarm", type: FeatureType.Trait, rarity: FeatureRarity.Common,
+        particularity: "",
+        description: "<p>You can occupy another creature's space and vice versa. You can move through any opening large enough for a tiny creature. Your space is considered difficult terrain. You have advantage on attack rolls against creatures in your space, and creatures within your space have disadvantage on attack rolls.</p> <p>You can't regain hit points or gain temporary hit points. When you would be subject to any of the following conditions, you instead lose [LEVEL] hit points: charmed,frightened, grappled, paralyzed, petrified, prone, restrained, or stunned.</p>"})
+
         /* PARAGON EFFECTS */
         listeTemplates.push({ name:"Paragon Power", type: FeatureType.Free, rarity: FeatureRarity.Uncommon, particularity: "1/round", 
-        description: "At the end of another creature's turn, you may regain one reaction and choose one of the following:<br>A. <b>Act:</b> Take an action. You may also spend some or all of your remaining movement as part of that action.<br>B. <b>Resist:</b> Reroll a saving throw against an ongoing effect. Spend [2*lvl] hit points to gain advantage on the roll." })
+        description: 
+`At the end of another creature's turn, you may regain one reaction and choose one of the following:
+<ul>
+    <li>
+        <b>Act:</b> Take an action. You may also spend some or all of your remaining movement as part of that action.
+    </li>
+    <li>
+        <b>Resist:</b> Reroll a saving throw against an ongoing effect. Spend [2*lvl] hit points to gain advantage on the roll.
+    </li>
+</ul>` })
         listeTemplates.push({ name:"Paragon Defenses", type: FeatureType.Free, rarity: FeatureRarity.Rare, particularity: "3/lr", 
         description: "When you would fail a saving throw, you may spend [2*lvl] hit points to succeed." })
+        
+        listeTemplates.push({ name: "Example Note", type: FeatureType.Trait, rarity: FeatureRarity.Text,
+        particularity: "Lore",
+        description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"})
+
         return listeTemplates
     }
 }

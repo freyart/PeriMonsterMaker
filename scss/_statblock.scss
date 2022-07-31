@@ -2,12 +2,13 @@
     pour générer le filtre pour colorer les icones voir 
     https://codepen.io/sosuke/pen/Pjoqqp
 */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 .monster {
     @extend .statblock;
     --colorlight: #b85b56;
-    --color: #953D2F;
-    --colordark: #7F291B;
+    --color: #821517;
+    --colordark: #5e0709;
     --background: #FAF6F6;
     --section-background: #ECDCD9;
     --t-color: invert(28%) sepia(25%) saturate(2088%) hue-rotate(327deg) brightness(93%) contrast(88%);
@@ -38,9 +39,9 @@
 
 .statblock {
     --gray: RGB(182, 176, 177);
-    --common: RGB(89, 188, 6);
-    --uncommon: RGB(208, 171, 17);
-    --rare: RGB(207, 17, 17);
+    --common: RGB(27, 145, 43);
+    --uncommon: RGB(177, 148, 3);
+    --rare: RGB(148, 18, 18);
     background-color: var(--background);
     padding: 3px;
     width: 400px;
@@ -52,7 +53,6 @@
 
     /* GÉNÉRAL */
     .name {
-        text-transform: uppercase;
         font-weight: 700;
     }
 
@@ -62,115 +62,32 @@
         color: white;
         font-weight: 400;
         font-size: 0.9em;
-
+        
         .header-top {
-            display: flex;
-            line-height: 24px;
+            padding: 4px 8px;
+            background-color: var(--color);
 
-            .identification {
-                flex: 1 1 50%;
-                padding: 4px 8px;
-                background-color: var(--color);
-                clip-path: polygon(0 0, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+            .name {
+                font-family: 'Roboto', sans-serif;
+                font-size: 1.6em;
+                padding-top: 5px;
             }
 
-            .titletext {
-                font-variant: small-caps;
-                text-transform: capitalize;
-                font-size: 1.4em;
-                font-weight: 600;
-
-                span {
-                    display: inline-block;
-                    vertical-align: top;
-                    margin-left: 4px;
-                }
-
-                .icon {
-                    height: 25px;
-                    background-size: 22px 22px;
-                    margin-left: 5px;
-                    margin-right: -5px;
-                }
-            }
-
-            .icons {
-                margin-left: -5px;
-                flex: 0 0 80px;
-                text-align: center;
-                .titletext {
-                    margin-bottom: -5px;
-                    margin-top: 4px;
-                }
-                .icon {
-                    filter: invert(100%);
-                }
-
+            .subtitle{
+                font-style: italic;
             }
         }
 
         .keywords {
-            border-top: 1px solid var(--colorlight);
-            text-align: center;
             color: var(--background);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-weight: 700;
-            padding: 2px;
+            font-weight: 600;
+            font-size: 1.2em;
+            padding: 1px 5px 5px 5px;
 
-            &>div {
-                display: inline-block;
+            i.icon {
+                filter: invert(95%);
+                margin-right: 3px;
             }
-
-            &>div+div::before {
-                content: '';
-                display: inline-block;
-                width: 0.45em;
-                height: 0.45em;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border-radius: 4px;
-                background-color: var(--colorlight);
-                vertical-align: top;
-                margin: 7px 7px 0 7px;
-            }
-        }
-    }
-
-    /* STATS */
-    .stats {
-        margin: 8px 3px;
-        display: flex;
-
-        &>div {
-            flex: 1 0 45%;
-            display: flex;
-            flex-direction: column;
-            padding: 0 5px;
-        }
-
-        &>div+div {
-            border-left: 1px dotted var(--color);
-        }
-
-        .item {
-
-            div {
-                display: inline-block;
-
-                &:nth-child(2) {
-                    float: right;
-                }
-            }
-
-            .name {
-                color: var(--color);
-            }
-        }
-
-        .icon {
-            margin: 0 5px;
-            filter: var(--t-color);
         }
     }
 
@@ -179,7 +96,7 @@
         color: var(--background);
         display: flex;
         background-color: var(--color);
-        margin: 8px;
+        margin: 6px;
         padding-top: 2px;
         padding-bottom: 2px;
 
@@ -189,37 +106,49 @@
             &>div {
                 color: var(--background);
                 text-align: center;
+                text-transform: uppercase;
+                font-weight: 600;
+                font-size: 1.3em;
 
                 &:nth-child(1) {
-                    background-color: var(--colordark);
-                    text-transform: uppercase;
+                    line-height: 1.3em;
+                    font-size: 0.8em;
                     font-weight: 700;
+                    background-color: var(--colordark);
                 }
             }
         }
 
         &>div+div {
-            border-left: 1px solid var(--colorlight);
+            border-left: 2px solid var(--colorlight);
         }
     }
+    
+    /* STATS */
+    .stats {
+        margin: 8px 3px;
 
-    /* AUTRES */
-    .autres {
-        margin: 8px;
+        .line {
+            padding-left: 34px;
+            
+            .icon {
+                vertical-align: top;
+                margin: 2px 5px 0 -27px;
+                filter: var(--t-color);
+            }
 
-        div {
-            margin-left: 28px;
-            text-indent: -28px;
+            .content {
+                display: inline-block;
+
+                .name {
+                    color: var(--color);
+                }
+            }
         }
 
-        .name {
-            color: var(--color);
-            margin-right: 5px;
-        }
-
-        .icon {
-            margin: 0 5px;
-            filter: var(--t-color);
+        hr {
+            margin: 2px 6px;
+            border-top: 2px solid var(--color);
         }
     }
 
@@ -227,72 +156,117 @@
     .traits {
         margin: 8px;
 
-        .section {
+        .separateur-section {
             background-color: var(--section-background);
-            color: var(--section-background);
+            color: white;
             text-transform: uppercase;
-            font-size: 0.9em;
+            font-size: 0.7em;
             font-weight: 800;
-            margin: 5px 0;
-            border-bottom: 3px solid var(--color);
+            margin: 5px 0 0 0;
+            border-bottom: 2px solid var(--color);
+            line-height: 1.4em;
 
             div {
                 display: inline-block;
-                padding: 1px 30px 0 15px;
+                padding: 2px 20px 0 30px;
                 background-color: var(--color);
-                clip-path: polygon(0 0, calc(100% - 15px) 0%, 100% 100%, 0% 100%);
+                clip-path: polygon(0 0, calc(100% - 10px) 0%, 100% 100%, 0% 100%);
             }
         }
 
-        &>.item+.item {
-            border-top: 1px dotted var(--color);
-            margin-top: 5px;
-            padding-top: 5px;
-
-        }
-
         .item {
+            
             &>div {
                 display: inline-block;
             }
 
-            .name {
-                display: inline-block;
-                color: black;
-                margin-right: 5px;
+            &:not(.text) {
+                margin-left: 30px;
 
-                &.text {
-                    margin-right: 0px;
-                }
-
-                &:not(.text)::after {
-                    font-weight: 700;
-                    content: ": ";
-                }
-
-                &:not(.text)::before {
+                &::before {
                     content: '';
                     display: inline-block;
                     width: 1.5em;
                     height: 1em;
                     background-color: var(--trait);
-                    margin-right: 3px;
+                    margin: 3px 3px 0 -30px;
                     vertical-align: top;
-                    margin-top: 3px;
                     clip-path: polygon(0 0, calc(100% - 8px) 0%, 100% 100%, 0% 100%);
                     background-color: var(--gray);
                 }
             }
 
-            .common::before {
+            .label {
+                display: inline;
+                margin-right: 5px;
+                font-weight: bold;
+
+                &::after {
+                    font-weight: 700;
+                    content: ":";
+                }
+
+                .spec::before{
+                    content:" (";
+                }
+
+                .spec::after {
+                    content: ")";
+                }
+            }
+
+            &.text {
+                margin: 8px 0;
+                background-color: var(--section-background);
+                padding: 8px;
+
+                .label::after {
+                    content: "";
+                }
+            }
+
+            ul, ol {
+                margin-bottom: 0;
+                padding-left: 15px;
+                list-style-type: '- ' ;
+            }
+
+            p {
+                display: inline-block;
+                text-indent: 1em;
+                margin-bottom: 0;
+            }
+
+            p:first-of-type {
+                display: inline;
+            }
+
+            .container {
+                border: 2px solid var(--section-background);
+                padding: 5px;
+                width: 100%;
+                .row {
+                    margin-right: 0;
+                    margin-left: 0;
+                    font-size: 0.9em;
+                    .col {
+                        padding: 2px 4px;
+                        &:not(:last-child) {
+                            border-right: 2px solid var(--section-background);
+                        }
+                    }
+                }
+            }
+
+            &.common::before {
                 background-color: var(--common) !important;
             }
 
-            .uncommon::before {
+            &.uncommon::before {
                 background-color: var(--uncommon) !important;
             }
 
-            .rare::before {
+            &.rare::before {
                 background-color: var(--rare) !important;
             }
         }
@@ -338,119 +312,76 @@ $i-support: url("../img/icons/support.svg");
 $i-target: url("../img/icons/target.svg");
 $i-tools: url("../img/icons/tools.svg");
 $i-vulnerable: url("../img/icons/vulnerable.svg");
+$i-bag: url("../img/icons/bag.svg");
+$i-swords: url("../img/icons/swords.svg");
 
 i.icon {
-	display: inline-block;
-	background-repeat: no-repeat;
-	background-size: 1.2em 1.2em;
-	height: 1.2em;
-	width: 1.2em;
-	vertical-align: middle;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: 1.2em 1.2em;
+    height: 1.2em;
+    width: 1.2em;
+    vertical-align: middle;
 
-	/* Roles */
-	&.star-empty {
-		background-image: $i-star-empty
-	}
-
-	&.star-filled {
-		background-image: $i-star-filled
-	}
-
-	&.controller {
-		background-image: $i-brain
-	}
-
-	&.defender {
-		background-image: $i-shield-half
-	}
-
-	&.lurker {
-		background-image: $i-moon
-	}
-
-	&.scout {
-		background-image: $i-eye-open
-	}
-
-	&.striker {
-		background-image: $i-flame
-	}
-
-	&.supporter {
-		background-image: $i-support
-	}
-
-	/* Stats */
-	&.save {
-        background-image: $i-hexagon
+    /* Roles */
+    &.controller {
+        background-image: $i-brain;
     }
-	
-    &.immunity,
-	&.ac {
-		background-image: $i-shield-full
-	}
 
-	&.hp {
-		background-image: $i-heart
-	}
+    &.defender {
+        background-image: $i-shield-half;
+    }
 
-	&.init {
-		background-image: $i-lightning
-	}
+    &.lurker {
+        background-image: $i-moon;
+    }
 
-	&.perception {
-		background-image: $i-eye-open
-	}
+    &.skirmisher {
+        background-image: $i-eye-open;
+    }
 
-	&.stealth {
-		background-image: $i-eye-closed
-	}
+    &.striker {
+        background-image: $i-flame;
+    }
 
-	&.atk {
-		background-image: $i-crosshair
-	}
+    &.supporter {
+        background-image: $i-support;
+    }
 
-	&.dcs {
-		background-image: $i-target
-	}
+    /* Stats */
+    &.ac {
+        background-image: $i-shield-half;
+    }
 
-	&.dmg {
-		background-image: $i-flame
-	}
+    &.hp {
+        background-image: $i-heart;
+    }
 
-	&.prof {
-		background-image: $i-tools
-	}
+    &.quickstats {
+        background-image: $i-swords;
+    }
 
-	&.cr {
-		background-image: $i-award
-	}
+    &.speed {
+        background-image: $i-lightning;
+    }
 
-	&.speed {
-		background-image: $i-footprints
-	}
+    &.skills {
+        background-image: $i-tools;
+    }
 
-	&.skill {
-		background-image: $i-bulb
-	}
+    &.senses {
+        background-image: $i-eye-open;
+    }
 
-	&.threshold {
-		background-image: $i-pulse
-	}
+    &.languages {
+        background-image: $i-speech;
+    }
 
-	&.vulnerable {
-		background-image: $i-vulnerable
-	}
+    &.prof {
+        background-image: $i-award;
+    }
 
-	&.resist {
-		background-image: $i-shield-half
-	}
-
-	&.senses {
-		background-image: $i-bell
-	}
-
-	&.language {
-		background-image: $i-speech
-	}
+    &.items {
+        background-image: $i-bag;
+    }
 }

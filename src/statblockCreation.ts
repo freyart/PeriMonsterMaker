@@ -69,19 +69,19 @@ function loadStatblock(statblock: Statblock){
     input_role.value = String(statblock.header.role)
     input_type.value = statblock.type
     input_keywords.value = statblock.header.keywords
+    input_other.value = statblock.header.other
     input_size.value = String(statblock.header.size)
-    input_origin.value = String(statblock.header.origin)
-    input_form.value = String(statblock.header.form)
+    input_monstertype.value = String(statblock.header.monstertype)
 
-    input_movement.value = statblock.statsAutres.movement
-    input_skills.value = statblock.statsAutres.skills
-    input_threshold.value = statblock.statsAutres.dThreshold
-    input_vulnerable.value = statblock.statsAutres.vulnerable
-    input_resistant.value = statblock.statsAutres.resistant
-    input_dImmune.value = statblock.statsAutres.dImmune
-    input_cImmune.value = statblock.statsAutres.cImmune
-    input_senses.value = statblock.statsAutres.senses
-    input_languages.value = statblock.statsAutres.languages
+    input_movement.value = statblock.stats.speed
+    input_skills.value = statblock.stats.skills
+    input_threshold.value = statblock.stats.dThreshold
+    input_vulnerable.value = statblock.stats.vulnerable
+    input_resistant.value = statblock.stats.resistant
+    input_dImmune.value = statblock.stats.dImmune
+    input_cImmune.value = statblock.stats.cImmune
+    input_senses.value = statblock.stats.senses
+    input_languages.value = statblock.stats.languages
 
     for (let i = 1; i <= 6; i++) {
         getInputById("attr"+i).value = String(statblock.abilities.abilityRanks[i-1])
@@ -102,9 +102,8 @@ function loadStatblock(statblock: Statblock){
     //Importer overrides si différents des stats calculées
     setValueIfNotEqual(input_ac, statblock.stats.ac, input_ac.placeholder)
     setValueIfNotEqual(input_hp, statblock.stats.hp, input_hp.placeholder )
-    setValueIfNotEqual(input_init, statblock.stats.init, input_init.placeholder)
+    setValueIfNotEqual(input_init, statblock.stats.initiative, input_init.placeholder)
     setValueIfNotEqual(input_perception, statblock.stats.perception, input_perception.placeholder)
-    setValueIfNotEqual(input_stealth, statblock.stats.stealth, input_stealth.placeholder)
     setValueIfNotEqual(input_atk, statblock.stats.atk, input_atk.placeholder)
     setValueIfNotEqual(input_dcLow, statblock.stats.dc, input_dcLow.placeholder)
     setValueIfNotEqual(input_dmg, statblock.stats.dmg, input_dmg.placeholder)
@@ -112,7 +111,13 @@ function loadStatblock(statblock: Statblock){
     setValueIfNotEqual(input_cr, statblock.stats.cr, input_cr.placeholder)
     setValueIfNotEqual(input_xp, statblock.stats.xp, input_xp.placeholder)
 
-
+    //Importer trained
+    input_str_trained.checked = statblock.abilities.strTrained
+    input_dex_trained.checked = statblock.abilities.dexTrained
+    input_con_trained.checked = statblock.abilities.conTrained
+    input_int_trained.checked = statblock.abilities.intTrained
+    input_wis_trained.checked = statblock.abilities.wisTrained
+    input_cha_trained.checked = statblock.abilities.chaTrained
 
     featureManager.RemoveAllFeatures()
     statblock.features.forEach(feature => {
@@ -143,8 +148,8 @@ function getStats(){
     input_hp.placeholder = String(output.hp)
     input_init.placeholder = String(output.initMod)
     input_perception.placeholder = String(output.passivePercept)
-    input_stealth.placeholder = String(output.passiveStealth)
     input_speed.placeholder = String(output.speed)
+    input_tSaves.value = String(output.tSaves)
 
     input_atk.placeholder = String(output.atkBonus)
     input_dcLow.placeholder = String(output.dcBonus)
@@ -156,17 +161,17 @@ function getStats(){
 
     statblockSortie.abilities = {
         strScore: output.strScore,
-        strDef: output.strSaveMod,
+        strTrained: input_str_trained.checked,
         dexScore: output.dexScore,
-        dexDef: output.dexSaveMod,
+        dexTrained: input_dex_trained.checked,
         conScore: output.conScore,
-        conDef: output.conSaveMod,
+        conTrained: input_con_trained.checked,
         intScore: output.intScore,
-        intDef: output.intSaveMod,
+        intTrained: input_int_trained.checked,
         wisScore: output.wisScore,
-        wisDef: output.wisSaveMod,
+        wisTrained: input_wis_trained.checked,
         chaScore: output.chaScore,
-        chaDef: output.chaSaveMod,
+        chaTrained: input_cha_trained.checked,
         abilityRanks: attributes
     }
 
@@ -230,9 +235,7 @@ function initSelectLists(){
     getSelectByIdFromEnum<Role>("role", Role, Role.Striker)
     getSelectByIdFromEnum<StatblockType>("type", StatblockType, StatblockType.Monster)
     getSelectByIdFromEnum<Size>("size", Size, Size.Medium)
-    getSelectByIdFromEnum<Origin>("origin", Origin, Origin.Natural)
-    getSelectByIdFromEnum<Form>("form", Form, Form.Humanoid)
-    
+    getSelectByIdFromEnum<MonsterType>("monstertype", MonsterType, MonsterType.Humanoid)
     getSelectByIdFromEnum<AbilityAttr>("attr1", AbilityAttr, AbilityAttr.Low) 
     getSelectByIdFromEnum<AbilityAttr>("attr2", AbilityAttr, AbilityAttr.Low) 
     getSelectByIdFromEnum<AbilityAttr>("attr3", AbilityAttr, AbilityAttr.Low) 
@@ -253,22 +256,33 @@ function prepareMonster() {
         rank: Number(input_rank.value),
         role: Number(input_role.value),
         keywords: input_keywords.value,
+        other: input_other.value,
         size: Number(input_size.value),
-        origin: Number(input_origin.value),
-        form: Number(input_form.value)
+        monstertype: Number(input_monstertype.value)
     }
     statblockSortie.stats = {
         ac: Number(getValueOrPlaceholder(input_ac)),
         hp: Number(getValueOrPlaceholder(input_hp)),
-        init: Number(getValueOrPlaceholder(input_init)),
+        initiative: Number(getValueOrPlaceholder(input_init)),
         perception: Number(getValueOrPlaceholder(input_perception)),
-        stealth: Number(getValueOrPlaceholder(input_stealth)),
         atk: Number(getValueOrPlaceholder(input_atk)),
         dc: Number(getValueOrPlaceholder(input_dcLow)),
         dmg: Number(getValueOrPlaceholder(input_dmg)),
         prof: Number(getValueOrPlaceholder(input_prof)),
         cr: getValueOrPlaceholder(input_cr),
-        xp: Number(getValueOrPlaceholder(input_xp))
+        xp: Number(getValueOrPlaceholder(input_xp)),
+        speed: input_movement.value,
+        skills: input_skills.value,
+        dThreshold: input_threshold.value,
+        vulnerable: input_vulnerable.value,
+        resistant: input_resistant.value,
+        dImmune: input_dImmune.value,
+        cImmune: input_cImmune.value,
+        senses: input_senses.value,
+        languages: input_languages.value,
+        items: input_items.value,
+        reach: input_reach.value,
+        range: input_range.value
     }
 
     statblockSortie.abilities = {
@@ -278,26 +292,15 @@ function prepareMonster() {
         intScore: Number(getValueOrPlaceholder(getInputById("attr4score"))),
         wisScore: Number(getValueOrPlaceholder(getInputById("attr5score"))),
         chaScore: Number(getValueOrPlaceholder(getInputById("attr6score"))),
-        strDef: statblockSortie.abilities.strDef,
-        dexDef: statblockSortie.abilities.dexDef,
-        conDef: statblockSortie.abilities.conDef,
-        intDef: statblockSortie.abilities.intDef,
-        wisDef: statblockSortie.abilities.wisDef,
-        chaDef: statblockSortie.abilities.chaDef,
+        strTrained: statblockSortie.abilities.strTrained,
+        dexTrained: statblockSortie.abilities.dexTrained,
+        conTrained: statblockSortie.abilities.conTrained,
+        intTrained: statblockSortie.abilities.intTrained,
+        wisTrained: statblockSortie.abilities.wisTrained,
+        chaTrained: statblockSortie.abilities.chaTrained,
         abilityRanks: statblockSortie.abilities.abilityRanks
     }
 
-    statblockSortie.statsAutres = {
-        movement: input_movement.value,
-        skills: input_skills.value,
-        dThreshold: input_threshold.value,
-        vulnerable: input_vulnerable.value,
-        resistant: input_resistant.value,
-        dImmune: input_dImmune.value,
-        cImmune: input_cImmune.value,
-        senses: input_senses.value,
-        languages: input_languages.value
-    }
     statblockSortie.features = featureManager.GetFeatures()
 }
 
@@ -352,6 +355,7 @@ function showInfo(id: string){
 
 function quickTemplateClick(idTemplate: string){
     featureManager.AddFeatureLineFrom(featureManager.templates[idTemplate])
+    updatePreview()
 }
 
 function getAbilityScoreFor(order: number): number{

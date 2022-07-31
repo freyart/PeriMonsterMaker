@@ -1,54 +1,56 @@
 type StatblockHeader = {
     name: string
     size: Size
-    origin: Origin
-    form: Form
+    monstertype: MonsterType
     level: number
     rank: Rank
     role: Role
     keywords: string
+    other: string
+}
+
+type StatblockAbilities = {
+    strScore: number
+    strTrained: boolean
+    dexScore: number
+    dexTrained: boolean
+    conScore: number
+    conTrained: boolean
+    intScore: number
+    intTrained: boolean
+    wisScore: number
+    wisTrained: boolean
+    chaScore: number
+    chaTrained: boolean
+    abilityRanks: AbilityAttr[]
 }
 
 type StatblockStats = {
     ac: number
     hp: number
-    init: number
-    perception: number
-    stealth: number
-    atk: number
-    dc: number
-    dmg: number
-    prof: number
-    cr: string
-    xp: number
-}
-
-type StatblockAbilities = {
-    strScore: number
-    strDef: number | null
-    dexScore: number
-    dexDef: number | null
-    conScore: number
-    conDef: number | null
-    intScore: number
-    intDef: number | null
-    wisScore: number
-    wisDef: number | null
-    chaScore: number
-    chaDef: number | null
-    abilityRanks: AbilityAttr[]
-}
-
-type StatblockStatsAutres = {
-    movement: string
-    skills: string
-    dThreshold: string
     vulnerable: string
     resistant: string
     dImmune: string
     cImmune: string
+    atk: number
+    dc: number
+    dmg: number
+    reach: string
+    range: string
+    
+    speed: string
+    initiative: number
+    skills: string
     senses: string
+    perception: number
+    
     languages: string
+    prof: number
+    cr: string
+    xp: number
+    items: string
+    
+    dThreshold: string
 }
 
 class Statblock {
@@ -56,7 +58,6 @@ class Statblock {
     header: StatblockHeader|null
     stats: StatblockStats|null
     abilities: StatblockAbilities|null
-    statsAutres: StatblockStatsAutres|null
     features: Feature[]
 
     constructor (){
@@ -64,7 +65,6 @@ class Statblock {
         this.header = null
         this.stats = null
         this.abilities = null
-        this.statsAutres = null
         this.features = new Array()
     }
 
@@ -93,9 +93,8 @@ class Statblock {
             }
             const statblock = this.CreateDivWithClass(this.type ?? "monster") 
             statblock.appendChild(this.CreateHeader())
-            statblock.appendChild(this.CreateStats())
             statblock.appendChild(this.CreateAbilities())
-            statblock.appendChild(this.CreateOtherStats())
+            statblock.appendChild(this.CreateStats())
             statblock.appendChild(this.CreateFeatures())
             destination.appendChild(statblock)
         }
@@ -106,96 +105,32 @@ class Statblock {
 
         if(this.header != undefined){
             const top = this.CreateDivWithClass("header-top")
-
-            const top1 = this.CreateDivWithClass("identification")
-            const top11 = this.CreateDivWithClass("name titletext")
-            top11.textContent = this.header.name
-            const top12 = this.CreateDivWithClass("desc")
-            top12.textContent = 
+            const top1 = this.CreateDivWithClass("name")
+            top1.textContent = this.header.name
+            const top2 = this.CreateDivWithClass("subtitle")
+            top2.textContent = 
                 Size[Number(this.header.size)] + ' ' 
-                + Origin[Number(this.header.origin)] + ' ' 
-                + Form[Number(this.header.form)]
+                + MonsterType[Number(this.header.monstertype)]
             if(this.header.keywords != "") {
-                top12.textContent += " (" + this.header.keywords + ")"
+                top2.textContent += " (" + this.header.keywords + ")"
             }
-            top1.appendChild(top11)
-            top1.appendChild(top12)
+            if(this.header.other != ""){
+                top2.textContent = addCommaIfNotEmpty(top2.textContent) + this.header.other
+            }
             top.appendChild(top1)
-
-            const top2 = this.CreateDivWithClass("icons")
-            const top21 = this.CreateDivWithClass("titletext")
-            top21.textContent = "L" + this.header.level
-            top21.appendChild(this.CreateIconFor(Role[Number(this.header.role)].toLowerCase()))
-            top2.appendChild(top21)
-            const top22 = this.CreateDivWithClass("stars")
-            top22.appendChild(this.CreateIconFor("star-filled"))
-
-            switch (this.header.rank) {
-                case Rank.Minion:
-                    top22.appendChild(this.CreateIconFor("star-empty"))
-                    top22.appendChild(this.CreateIconFor("star-empty"))
-                    top22.appendChild(this.CreateIconFor("star-empty"))
-                    break;
-                case Rank.Grunt:
-                    top22.appendChild(this.CreateIconFor("star-filled"))
-                    top22.appendChild(this.CreateIconFor("star-empty"))
-                    top22.appendChild(this.CreateIconFor("star-empty"))
-                    break;
-                case Rank.Elite:
-                    top22.appendChild(this.CreateIconFor("star-filled"))
-                    top22.appendChild(this.CreateIconFor("star-filled"))
-                    top22.appendChild(this.CreateIconFor("star-empty"))
-                    break;
-                default:
-                    top22.appendChild(this.CreateIconFor("star-filled"))
-                    top22.appendChild(this.CreateIconFor("star-filled"))
-                    top22.appendChild(this.CreateIconFor("star-filled"))
-                    break;
-            }
-            top2.appendChild(top22)
             top.appendChild(top2)
-            conteneur.appendChild(top)
             
             const keywords = this.CreateDivWithClass("keywords")
-            const keywords1 = document.createElement("div")
-            keywords1.textContent = "Level " + this.header.level
-            keywords.appendChild(keywords1)
-            const keywords2 = document.createElement("div")
-            keywords2.textContent = Rank[this.header.rank]
-            keywords.appendChild(keywords2)
+            keywords.textContent = "Level " + this.header.level + " " + Rank[this.header.rank]
 
-            const keywords3 = document.createElement("div")
-            keywords3.textContent = Role[this.header.role]
-            keywords.appendChild(keywords3)
+            keywords.prepend(this.CreateIconFor(Role[Number(this.header.role)].toLowerCase()))
+            keywords.append(", " + Role[Number(this.header.role)])
 
+            conteneur.appendChild(top)
             conteneur.appendChild(keywords)
         }
 
         return conteneur
-    }
-
-    private CreateStats() : Element {
-        const statblock = this.CreateDivWithClass("stats") 
-        const col1 = this.CreateDivWithClass("col1") 
-        const col2 = this.CreateDivWithClass("col2") 
-
-        if(this.stats != undefined){
-            col1.appendChild(this.CreateLineStat("ac","ac",this.stats.ac))
-            col1.appendChild(this.CreateLineStat("hp","hp",this.stats.hp))
-            col1.appendChild(this.CreateLineStat("init","initiative", showPlusMinus(this.stats.init)))
-            col1.appendChild(this.CreateLineStat("perception","Passive Perc.",this.stats.perception))
-            col1.appendChild(this.CreateLineStat("stealth","Passive Stealth",this.stats.stealth))
-
-            col2.appendChild(this.CreateLineStat("atk","Atk Bonus", showPlusMinus(this.stats.atk)))
-            col2.appendChild(this.CreateLineStat("dcs","Atk DC", showPlusMinus(this.stats.dc)))
-            col2.appendChild(this.CreateLineStat("dmg","Damage",this.stats.dmg))
-            col2.appendChild(this.CreateLineStat("prof","Proficiency", showPlusMinus(this.stats.prof)))
-            col2.appendChild(this.CreateLineStat("cr","CR", this.stats.cr + " (" + this.stats.xp + " XP)"))
-        }
-
-        statblock.appendChild(col1)
-        statblock.appendChild(col2)
-        return statblock
     }
 
     private CreateAbilities() : Element {
@@ -212,46 +147,112 @@ class Statblock {
         return statblock
     }
 
-    private CreateOtherStats() : Element {
-        const autres = this.CreateDivWithClass("autres") 
-        const abi = this.abilities
-        if( !(abi.strScore === 0 || abi.strDef === 0) || 
-            !(abi.dexScore === 0 || abi.dexDef === 0) || 
-            !(abi.conScore === 0 || abi.conDef === 0) || 
-            !(abi.intScore === 0 || abi.intDef === 0) || 
-            !(abi.wisScore === 0 || abi.wisDef === 0) || 
-            !(abi.chaScore === 0 || abi.chaDef === 0)) {
-                autres.appendChild(this.CreateLineStatAutre(
-                    "save", "Saves", this.GenererValeurSaves()))
-            }
-
-        if(this.statsAutres != null){
-            if(this.statsAutres.movement) autres.appendChild(this.CreateLineStatAutre(
-                "speed", "Speed", this.statsAutres.movement))
-            if(this.statsAutres.skills) autres.appendChild(this.CreateLineStatAutre(
-                "skill", "Skills", this.statsAutres.skills))
-            if(this.statsAutres.dThreshold) autres.appendChild(this.CreateLineStatAutre(
-                "threshold", "Damage threshold", this.statsAutres.dThreshold))
-            if(this.statsAutres.vulnerable) autres.appendChild(this.CreateLineStatAutre(
-                "vulnerable", "Vulnerable", this.statsAutres.vulnerable))
-            if(this.statsAutres.resistant) autres.appendChild(this.CreateLineStatAutre(
-                "resist", "Resistant", this.statsAutres.resistant))
-            if(this.statsAutres.dImmune) autres.appendChild(this.CreateLineStatAutre(
-                "immunity", "D. Immune", this.statsAutres.dImmune))
-            if(this.statsAutres.cImmune) autres.appendChild(this.CreateLineStatAutre(
-                "immunity", "C. Immune", this.statsAutres.cImmune))
-            if(this.statsAutres.senses) autres.appendChild(this.CreateLineStatAutre(
-                "senses", "Senses", this.statsAutres.senses))
-            if(this.statsAutres.languages) autres.appendChild(this.CreateLineStatAutre(
-                "language", "Languages", this.statsAutres.languages))
+    private CreateStats() : Element {
+        const statblock = this.CreateDivWithClass("stats")
+        if(this.stats == undefined){
+            return statblock
         }
 
-        return autres
+        let ligneGen
+
+        // AC + Saves
+        let acAndSaves = this.CreateStatFor("AC", this.stats.ac)
+        const abi = this.abilities
+        if( 
+            (abi.strScore != 0 && abi.strTrained) || 
+            (abi.dexScore != 0 && abi.dexTrained) || 
+            (abi.conScore != 0 && abi.conTrained) || 
+            (abi.intScore != 0 && abi.intTrained) || 
+            (abi.wisScore != 0 && abi.wisTrained) || 
+            (abi.chaScore != 0 && abi.chaTrained)) 
+        {
+            acAndSaves += this.CreateStatFor("Saving Throws", this.GenererValeurSaves())
+        }
+            
+        ligneGen = this.CreateLineStat("ac", acAndSaves )
+        statblock.append(ligneGen)
+
+        // HP Resistances Immunites Vulnerabilites
+        
+        let hitpoints: string
+        if(this.header.rank == Rank.Minion){
+            hitpoints = this.CreateStatFor("HP", this.stats.hp + " (no damage from a missed attack)")
+        }
+        else if(this.header.rank == Rank.Grunt || this.header.rank == Rank.Elite) {
+            hitpoints = this.CreateStatFor("HP", this.stats.hp) + 
+            this.CreateStatFor("Bloodied", Math.ceil(this.stats.hp/2))
+        }
+        else {
+            hitpoints = this.CreateStatFor("HP", this.stats.hp) + 
+            this.CreateStatFor("Bloodied", Math.floor(this.stats.hp/3*2)) +
+            this.CreateStatFor("Enraged", Math.floor(this.stats.hp/3))
+        }
+
+        let damageThreshold = this.CreateStatFor("Damage Threshold", this.stats.dThreshold)
+        let vulnerable = this.CreateStatFor("Vulnerable", this.stats.vulnerable)
+        let resistance = this.CreateStatFor("Resistant", this.stats.resistant)
+        let immunity = this.CreateStatFor("Immune", this.stats.dImmune)
+        if(immunity == "") {
+            immunity = this.CreateStatFor("Immune", this.stats.cImmune)
+        }
+        else {
+            immunity += this.CreateStatFor("and", this.stats.cImmune)
+            immunity = immunity.replace(".</span> <span class=\"name\">and</span>", "</span> <span class=\"name\">and</span>")
+        }
+
+        ligneGen = this.CreateLineStat("hp", hitpoints + damageThreshold + vulnerable + resistance + immunity)
+        statblock.append(ligneGen)
+
+        // Quickstats
+        ligneGen = this.CreateLineStat("quickstats", 
+            this.CreateStatFor("ATK", showPlusMinus(this.stats.atk)) + 
+            this.CreateStatFor("DC", showPlusMinus(this.stats.dc)) +
+            this.CreateStatFor("DMG", this.stats.dmg) +
+            this.CreateStatFor("Reach", this.stats.reach) +
+            this.CreateStatFor("Range", this.stats.range))
+        statblock.append(ligneGen)
+        statblock.appendChild(document.createElement("hr"))
+
+        //Speed
+        ligneGen = this.CreateLineStat("speed", 
+            this.CreateStatFor("Speed", this.stats.speed) + 
+            this.CreateStatFor("Initiative", showPlusMinus(this.stats.initiative)))
+        statblock.append(ligneGen)
+        
+        //Skills
+        ligneGen = this.CreateLineStat("skills", 
+            this.CreateStatFor("Skills", this.stats.skills))
+        statblock.append(ligneGen)
+
+        //Senses
+        ligneGen = this.CreateLineStat("senses", 
+        this.CreateStatFor("Senses", 
+            addCommaIfNotEmpty(this.stats.senses) + "passive Perception " + this.stats.perception))
+        statblock.append(ligneGen)
+
+        //Languages
+        ligneGen = this.CreateLineStat("languages", 
+        this.CreateStatFor("Languages", this.stats.languages))
+        statblock.append(ligneGen)
+
+        //Proficiency
+        ligneGen = this.CreateLineStat("prof", 
+            this.CreateStatFor("Proficiency", showPlusMinus(this.stats.prof)) + 
+            this.CreateStatFor("CR", this.stats.cr) +
+            this.CreateStatFor("XP", this.stats.xp))
+        statblock.append(ligneGen)
+
+        //Items
+        ligneGen = this.CreateLineStat("items", 
+        this.CreateStatFor("Items", this.stats.items))
+        statblock.append(ligneGen)
+
+        return statblock
     }
 
     private CreateFeatures() : Element {
         const traits = this.CreateDivWithClass("traits") 
-        if(this.statsAutres != null){
+        if(this.stats != null){
 
             getAllEnumValues(FeatureType).forEach(type => {
                 const selectionFeature = this.features.filter(function(x){ return x.type === type})
@@ -279,27 +280,31 @@ class Statblock {
         return icon
     }
 
-    private CreateLineStat(forWhat: string, label: string, value: string|number) : Element {
-        let element = this.CreateDivWithClass("item")
-        let name = this.CreateDivWithClass("name")
-        name.appendChild(this.CreateIconFor(forWhat))
-        name.innerHTML += label
-        let contenu = document.createElement("div")
-        contenu.textContent = String(value)
-        element.appendChild(name)
-        element.appendChild(contenu)
+    private CreateLineStat(iconClass: string, htmlContent: string) : Element {
+        if(String(htmlContent) === ""){
+            return document.createElement("span");
+        }
+        let element = this.CreateDivWithClass("line")
+        let content = this.CreateDivWithClass("content")
+        content.innerHTML = htmlContent
+        element.append(content)
+        if(iconClass != "") {
+            let icon = this.CreateIconFor(iconClass)
+            element.prepend(icon)
+        }
         return element
     }
 
-    private CreateLineStatAutre(forWhat: string, label: string, value: string|number) : Element {
-        let element = this.CreateDivWithClass("item")
-        let name = document.createElement("span")
-        name.className = "name"
-        name.appendChild(this.CreateIconFor(forWhat))
-        name.innerHTML += label
-        element.appendChild(name)
-        element.innerHTML += endsWithDot(String(value))
-        return element
+    private CreateStatFor(name: string, value: string|number) : string{
+        if(String(value) === ""){
+            return "";
+        }
+        let nameSpan = document.createElement("span")
+        nameSpan.className = "name"
+        nameSpan.innerHTML = name
+        let contentSpan = document.createElement("span")
+        contentSpan.innerHTML = endsWithDot(String(value).trim())
+        return nameSpan.outerHTML + "&nbsp;" + contentSpan.outerHTML + " "
     }
 
     private CreateLineAttr(ability: string, statScore: number): Element {
@@ -307,12 +312,12 @@ class Statblock {
         const score = document.createElement("div")
         const mod = document.createElement("div")
 
-        score.textContent = ability
+        score.textContent = ability + " " + statScore
         if(statScore === 0) {
-            mod.innerHTML = "0"
+            mod.innerHTML = "&mdash;"
         }
         else {
-            mod.innerHTML = `${statScore}&nbsp;(${showPlusMinus(getAbilityModFromScore(statScore))})`
+            mod.innerHTML = `${showPlusMinus(getAbilityModFromScore(statScore))}`
         }
 
         attribute.appendChild(score)
@@ -322,7 +327,7 @@ class Statblock {
     }
 
     private CreateFeatureSection(name: string): Element {
-        const section = this.CreateDivWithClass("section")
+        const section = this.CreateDivWithClass("separateur-section")
         const contenu = document.createElement("div")
         contenu.textContent = name
         section.appendChild(contenu)
@@ -330,11 +335,12 @@ class Statblock {
     }
 
     private CreateFeature(feature: Feature): Element{
-        const item = this.CreateDivWithClass("item")
-        const name = this.CreateDivWithClass("name " + FeatureRarity[feature.rarity].toLowerCase())
+        const item = this.CreateDivWithClass("item "+ FeatureRarity[feature.rarity].toLowerCase())
+        const name = this.CreateDivWithClass("label")
         name.textContent += feature.name
         if(feature.particularity != ""){
-            const partic = this.CreateDivWithClass("special")
+            const partic = document.createElement("span")
+            partic.className = "spec"
             partic.textContent = feature.particularity
             name.appendChild(partic)
         }
@@ -348,23 +354,23 @@ class Statblock {
         let saves: string[] = Array()
         const abi = this.abilities
 
-        if(!(abi.strScore === 0 || abi.strDef === 0)) {
-            saves.push("Str&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.strScore) + abi.strDef))
+        if((abi.strScore != 0 && abi.strTrained)) {
+            saves.push("Str&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.strScore) + this.stats.prof))
         }
-        if(!(abi.dexScore === 0 || abi.dexDef === 0)) {
-            saves.push("Dex&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.dexScore) + abi.dexDef))
+        if((abi.dexScore != 0 && abi.dexTrained)) {
+            saves.push("Dex&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.dexScore) + this.stats.prof))
         }
-        if(!(abi.conScore === 0 || abi.conDef === 0)) {
-            saves.push("Con&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.conScore) + abi.conDef))
+        if((abi.conScore != 0 && abi.conTrained)) {
+            saves.push("Con&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.conScore) + this.stats.prof))
         }
-        if(!(abi.intScore === 0 || abi.intDef === 0)) {
-            saves.push("Int&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.intScore) + abi.intDef))
+        if((abi.intScore != 0 && abi.intTrained)) {
+            saves.push("Int&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.intScore) + this.stats.prof))
         }
-        if(!(abi.wisScore === 0 || abi.wisDef === 0)) {
-            saves.push("Wis&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.wisScore) + abi.wisDef))
+        if((abi.wisScore != 0 && abi.wisTrained)) {
+            saves.push("Wis&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.wisScore) + this.stats.prof))
         }
-        if(!(abi.chaScore === 0 || abi.chaDef === 0)) {
-            saves.push("Cha&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.chaScore) + abi.chaDef))
+        if((abi.chaScore != 0 && abi.chaTrained)) {
+            saves.push("Cha&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.chaScore) + this.stats.prof))
         }
         return saves.join(", ")
     }

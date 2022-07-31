@@ -253,13 +253,47 @@ class FeatureManager {
         listeTemplates.push({ name: "Utility: Buff", type: FeatureType.Action, rarity: FeatureRarity.Common, particularity: "Recharge 5-6",
             description: "<em>Utility:</em> range 30 ft., two friendly creatures. <em>Effect:</em> the creature gains advantage on saving throws. This effect ends at the start of your next turn." });
         /* ARCHETYPES */
-        listeTemplates.push({ name: "Spell", type: FeatureType.Action, rarity: FeatureRarity.Common, particularity: "",
+        listeTemplates.push({ name: "Cantrip", type: FeatureType.Action, rarity: FeatureRarity.Common, particularity: "",
             description: "<em>Spell:</em> Cantrip, School, VSM|CR <[verbal, somatic, material, concentration, ritual]. <em>Ranged: </em> +X to hit, range 60 ft., one target. <em>Hit:</em> 0 (1d4 + 0) slashing damage." });
+        listeTemplates.push({ name: "Spell: Call Lightning", type: FeatureType.Action, rarity: FeatureRarity.Uncommon, particularity: "1/sr",
+            description: "<em>Spell:</em> 3rd-level, Evocation, VS. <em>Save: </em> DC 17 vs DEX, a 10 ft. radius circle centered on a point within 30 ft. of you, all targets. <em>Hit:</em> 30 (4d12 + 4) lightning damage. <em>Miss:</em> half damage." });
+        listeTemplates.push({ name: "Summoner", type: FeatureType.Action, rarity: FeatureRarity.Rare,
+            particularity: "2 SP/lr",
+            description: `<em>Utility:</em> range 30 ft. (does not require line of sight), 1-8 humanoid corpses. You spend SP to reanimate the targeted corpses as 6th-level undead creatures. These creatures act after your turn and obey your commands for up to 1 hour, at which point they revert to humanoid corpses.
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <strong>1 SP:</strong> 4 Minions<br>
+            <strong>1 SP:</strong> 1 Grunt<br>
+            <strong>2 SP:</strong> 8 Minions
+        </div>
+        <div class="col">
+            <strong>2 SP:</strong> 4 Minions, 1 Grunt<br>
+            <strong>2 SP:</strong> 2 Grunts<br>
+            <strong>2 SP:</strong> 1 Elite
+        </div>
+    </div>
+</div>
+` });
+        listeTemplates.push({ name: "Swarm", type: FeatureType.Trait, rarity: FeatureRarity.Common,
+            particularity: "",
+            description: "<p>You can occupy another creature's space and vice versa. You can move through any opening large enough for a tiny creature. Your space is considered difficult terrain. You have advantage on attack rolls against creatures in your space, and creatures within your space have disadvantage on attack rolls.</p> <p>You can't regain hit points or gain temporary hit points. When you would be subject to any of the following conditions, you instead lose [LEVEL] hit points: charmed,frightened, grappled, paralyzed, petrified, prone, restrained, or stunned.</p>" });
         /* PARAGON EFFECTS */
         listeTemplates.push({ name: "Paragon Power", type: FeatureType.Free, rarity: FeatureRarity.Uncommon, particularity: "1/round",
-            description: "At the end of another creature's turn, you may regain one reaction and choose one of the following:<br>A. <b>Act:</b> Take an action. You may also spend some or all of your remaining movement as part of that action.<br>B. <b>Resist:</b> Reroll a saving throw against an ongoing effect. Spend [2*lvl] hit points to gain advantage on the roll." });
+            description: `At the end of another creature's turn, you may regain one reaction and choose one of the following:
+<ul>
+    <li>
+        <b>Act:</b> Take an action. You may also spend some or all of your remaining movement as part of that action.
+    </li>
+    <li>
+        <b>Resist:</b> Reroll a saving throw against an ongoing effect. Spend [2*lvl] hit points to gain advantage on the roll.
+    </li>
+</ul>` });
         listeTemplates.push({ name: "Paragon Defenses", type: FeatureType.Free, rarity: FeatureRarity.Rare, particularity: "3/lr",
             description: "When you would fail a saving throw, you may spend [2*lvl] hit points to succeed." });
+        listeTemplates.push({ name: "Example Note", type: FeatureType.Trait, rarity: FeatureRarity.Text,
+            particularity: "Lore",
+            description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>" });
         return listeTemplates;
     }
 }
@@ -515,9 +549,9 @@ const input_rank = getSelectById("rank");
 const input_role = getSelectById("role");
 const input_type = getSelectById("type");
 const input_keywords = getInputById("keywords");
+const input_other = getInputById("other");
 const input_size = getSelectById("size");
-const input_origin = getSelectById("origin");
-const input_form = getSelectById("form");
+const input_monstertype = getSelectById("monstertype");
 /* SECTION CALCULS */
 const input_ac = getInputById("ac");
 const input_hp = getInputById("hp");
@@ -525,6 +559,7 @@ const input_init = getInputById("init");
 const input_perception = getInputById("perception");
 const input_stealth = getInputById("stealth");
 const input_speed = getInputById("speed");
+const input_tSaves = getInputById("tSaves");
 const input_atk = getInputById("atk");
 const input_dcLow = getInputById("dc-low");
 const input_dmg = getInputById("dmg");
@@ -541,6 +576,9 @@ const input_dImmune = getInputById("dimmune");
 const input_cImmune = getInputById("cimmune");
 const input_senses = getInputById("senses");
 const input_languages = getInputById("languages");
+const input_reach = getInputById("reach");
+const input_range = getInputById("range");
+const input_items = getInputById("items");
 /* ABILITIES */
 const input_str = getInputById("attr1score");
 const input_dex = getInputById("attr2score");
@@ -548,13 +586,18 @@ const input_con = getInputById("attr3score");
 const input_int = getInputById("attr4score");
 const input_wis = getInputById("attr5score");
 const input_cha = getInputById("attr6score");
+const input_str_trained = getInputById("attr1trained");
+const input_dex_trained = getInputById("attr2trained");
+const input_con_trained = getInputById("attr3trained");
+const input_int_trained = getInputById("attr4trained");
+const input_wis_trained = getInputById("attr5trained");
+const input_cha_trained = getInputById("attr6trained");
 class Statblock {
     constructor() {
         this.type = null;
         this.header = null;
         this.stats = null;
         this.abilities = null;
-        this.statsAutres = null;
         this.features = new Array();
     }
     Export() {
@@ -579,9 +622,8 @@ class Statblock {
             }
             const statblock = this.CreateDivWithClass((_a = this.type) !== null && _a !== void 0 ? _a : "monster");
             statblock.appendChild(this.CreateHeader());
-            statblock.appendChild(this.CreateStats());
             statblock.appendChild(this.CreateAbilities());
-            statblock.appendChild(this.CreateOtherStats());
+            statblock.appendChild(this.CreateStats());
             statblock.appendChild(this.CreateFeatures());
             destination.appendChild(statblock);
         }
@@ -590,85 +632,28 @@ class Statblock {
         const conteneur = this.CreateDivWithClass("header");
         if (this.header != undefined) {
             const top = this.CreateDivWithClass("header-top");
-            const top1 = this.CreateDivWithClass("identification");
-            const top11 = this.CreateDivWithClass("name titletext");
-            top11.textContent = this.header.name;
-            const top12 = this.CreateDivWithClass("desc");
-            top12.textContent =
+            const top1 = this.CreateDivWithClass("name");
+            top1.textContent = this.header.name;
+            const top2 = this.CreateDivWithClass("subtitle");
+            top2.textContent =
                 Size[Number(this.header.size)] + ' '
-                    + Origin[Number(this.header.origin)] + ' '
-                    + Form[Number(this.header.form)];
+                    + MonsterType[Number(this.header.monstertype)];
             if (this.header.keywords != "") {
-                top12.textContent += " (" + this.header.keywords + ")";
+                top2.textContent += " (" + this.header.keywords + ")";
             }
-            top1.appendChild(top11);
-            top1.appendChild(top12);
+            if (this.header.other != "") {
+                top2.textContent = addCommaIfNotEmpty(top2.textContent) + this.header.other;
+            }
             top.appendChild(top1);
-            const top2 = this.CreateDivWithClass("icons");
-            const top21 = this.CreateDivWithClass("titletext");
-            top21.textContent = "L" + this.header.level;
-            top21.appendChild(this.CreateIconFor(Role[Number(this.header.role)].toLowerCase()));
-            top2.appendChild(top21);
-            const top22 = this.CreateDivWithClass("stars");
-            top22.appendChild(this.CreateIconFor("star-filled"));
-            switch (this.header.rank) {
-                case Rank.Minion:
-                    top22.appendChild(this.CreateIconFor("star-empty"));
-                    top22.appendChild(this.CreateIconFor("star-empty"));
-                    top22.appendChild(this.CreateIconFor("star-empty"));
-                    break;
-                case Rank.Grunt:
-                    top22.appendChild(this.CreateIconFor("star-filled"));
-                    top22.appendChild(this.CreateIconFor("star-empty"));
-                    top22.appendChild(this.CreateIconFor("star-empty"));
-                    break;
-                case Rank.Elite:
-                    top22.appendChild(this.CreateIconFor("star-filled"));
-                    top22.appendChild(this.CreateIconFor("star-filled"));
-                    top22.appendChild(this.CreateIconFor("star-empty"));
-                    break;
-                default:
-                    top22.appendChild(this.CreateIconFor("star-filled"));
-                    top22.appendChild(this.CreateIconFor("star-filled"));
-                    top22.appendChild(this.CreateIconFor("star-filled"));
-                    break;
-            }
-            top2.appendChild(top22);
             top.appendChild(top2);
-            conteneur.appendChild(top);
             const keywords = this.CreateDivWithClass("keywords");
-            const keywords1 = document.createElement("div");
-            keywords1.textContent = "Level " + this.header.level;
-            keywords.appendChild(keywords1);
-            const keywords2 = document.createElement("div");
-            keywords2.textContent = Rank[this.header.rank];
-            keywords.appendChild(keywords2);
-            const keywords3 = document.createElement("div");
-            keywords3.textContent = Role[this.header.role];
-            keywords.appendChild(keywords3);
+            keywords.textContent = "Level " + this.header.level + " " + Rank[this.header.rank];
+            keywords.prepend(this.CreateIconFor(Role[Number(this.header.role)].toLowerCase()));
+            keywords.append(", " + Role[Number(this.header.role)]);
+            conteneur.appendChild(top);
             conteneur.appendChild(keywords);
         }
         return conteneur;
-    }
-    CreateStats() {
-        const statblock = this.CreateDivWithClass("stats");
-        const col1 = this.CreateDivWithClass("col1");
-        const col2 = this.CreateDivWithClass("col2");
-        if (this.stats != undefined) {
-            col1.appendChild(this.CreateLineStat("ac", "ac", this.stats.ac));
-            col1.appendChild(this.CreateLineStat("hp", "hp", this.stats.hp));
-            col1.appendChild(this.CreateLineStat("init", "initiative", showPlusMinus(this.stats.init)));
-            col1.appendChild(this.CreateLineStat("perception", "Passive Perc.", this.stats.perception));
-            col1.appendChild(this.CreateLineStat("stealth", "Passive Stealth", this.stats.stealth));
-            col2.appendChild(this.CreateLineStat("atk", "Atk Bonus", showPlusMinus(this.stats.atk)));
-            col2.appendChild(this.CreateLineStat("dcs", "Atk DC", showPlusMinus(this.stats.dc)));
-            col2.appendChild(this.CreateLineStat("dmg", "Damage", this.stats.dmg));
-            col2.appendChild(this.CreateLineStat("prof", "Proficiency", showPlusMinus(this.stats.prof)));
-            col2.appendChild(this.CreateLineStat("cr", "CR", this.stats.cr + " (" + this.stats.xp + " XP)"));
-        }
-        statblock.appendChild(col1);
-        statblock.appendChild(col2);
-        return statblock;
     }
     CreateAbilities() {
         const statblock = this.CreateDivWithClass("attributes");
@@ -682,42 +667,86 @@ class Statblock {
         }
         return statblock;
     }
-    CreateOtherStats() {
-        const autres = this.CreateDivWithClass("autres");
+    CreateStats() {
+        const statblock = this.CreateDivWithClass("stats");
+        if (this.stats == undefined) {
+            return statblock;
+        }
+        let ligneGen;
+        // AC + Saves
+        let acAndSaves = this.CreateStatFor("AC", this.stats.ac);
         const abi = this.abilities;
-        if (!(abi.strScore === 0 || abi.strDef === 0) ||
-            !(abi.dexScore === 0 || abi.dexDef === 0) ||
-            !(abi.conScore === 0 || abi.conDef === 0) ||
-            !(abi.intScore === 0 || abi.intDef === 0) ||
-            !(abi.wisScore === 0 || abi.wisDef === 0) ||
-            !(abi.chaScore === 0 || abi.chaDef === 0)) {
-            autres.appendChild(this.CreateLineStatAutre("save", "Saves", this.GenererValeurSaves()));
+        if ((abi.strScore != 0 && abi.strTrained) ||
+            (abi.dexScore != 0 && abi.dexTrained) ||
+            (abi.conScore != 0 && abi.conTrained) ||
+            (abi.intScore != 0 && abi.intTrained) ||
+            (abi.wisScore != 0 && abi.wisTrained) ||
+            (abi.chaScore != 0 && abi.chaTrained)) {
+            acAndSaves += this.CreateStatFor("Saving Throws", this.GenererValeurSaves());
         }
-        if (this.statsAutres != null) {
-            if (this.statsAutres.movement)
-                autres.appendChild(this.CreateLineStatAutre("speed", "Speed", this.statsAutres.movement));
-            if (this.statsAutres.skills)
-                autres.appendChild(this.CreateLineStatAutre("skill", "Skills", this.statsAutres.skills));
-            if (this.statsAutres.dThreshold)
-                autres.appendChild(this.CreateLineStatAutre("threshold", "Damage threshold", this.statsAutres.dThreshold));
-            if (this.statsAutres.vulnerable)
-                autres.appendChild(this.CreateLineStatAutre("vulnerable", "Vulnerable", this.statsAutres.vulnerable));
-            if (this.statsAutres.resistant)
-                autres.appendChild(this.CreateLineStatAutre("resist", "Resistant", this.statsAutres.resistant));
-            if (this.statsAutres.dImmune)
-                autres.appendChild(this.CreateLineStatAutre("immunity", "D. Immune", this.statsAutres.dImmune));
-            if (this.statsAutres.cImmune)
-                autres.appendChild(this.CreateLineStatAutre("immunity", "C. Immune", this.statsAutres.cImmune));
-            if (this.statsAutres.senses)
-                autres.appendChild(this.CreateLineStatAutre("senses", "Senses", this.statsAutres.senses));
-            if (this.statsAutres.languages)
-                autres.appendChild(this.CreateLineStatAutre("language", "Languages", this.statsAutres.languages));
+        ligneGen = this.CreateLineStat("ac", acAndSaves);
+        statblock.append(ligneGen);
+        // HP Resistances Immunites Vulnerabilites
+        let hitpoints;
+        if (this.header.rank == Rank.Minion) {
+            hitpoints = this.CreateStatFor("HP", this.stats.hp + " (no damage from a missed attack)");
         }
-        return autres;
+        else if (this.header.rank == Rank.Grunt || this.header.rank == Rank.Elite) {
+            hitpoints = this.CreateStatFor("HP", this.stats.hp) +
+                this.CreateStatFor("Bloodied", Math.ceil(this.stats.hp / 2));
+        }
+        else {
+            hitpoints = this.CreateStatFor("HP", this.stats.hp) +
+                this.CreateStatFor("Bloodied", Math.floor(this.stats.hp / 3 * 2)) +
+                this.CreateStatFor("Enraged", Math.floor(this.stats.hp / 3));
+        }
+        let damageThreshold = this.CreateStatFor("Damage Threshold", this.stats.dThreshold);
+        let vulnerable = this.CreateStatFor("Vulnerable", this.stats.vulnerable);
+        let resistance = this.CreateStatFor("Resistant", this.stats.resistant);
+        let immunity = this.CreateStatFor("Immune", this.stats.dImmune);
+        if (immunity == "") {
+            immunity = this.CreateStatFor("Immune", this.stats.cImmune);
+        }
+        else {
+            immunity += this.CreateStatFor("and", this.stats.cImmune);
+            immunity = immunity.replace(".</span> <span class=\"name\">and</span>", "</span> <span class=\"name\">and</span>");
+        }
+        ligneGen = this.CreateLineStat("hp", hitpoints + damageThreshold + vulnerable + resistance + immunity);
+        statblock.append(ligneGen);
+        // Quickstats
+        ligneGen = this.CreateLineStat("quickstats", this.CreateStatFor("ATK", showPlusMinus(this.stats.atk)) +
+            this.CreateStatFor("DC", showPlusMinus(this.stats.dc)) +
+            this.CreateStatFor("DMG", this.stats.dmg) +
+            this.CreateStatFor("Reach", this.stats.reach) +
+            this.CreateStatFor("Range", this.stats.range));
+        statblock.append(ligneGen);
+        statblock.appendChild(document.createElement("hr"));
+        //Speed
+        ligneGen = this.CreateLineStat("speed", this.CreateStatFor("Speed", this.stats.speed) +
+            this.CreateStatFor("Initiative", showPlusMinus(this.stats.initiative)));
+        statblock.append(ligneGen);
+        //Skills
+        ligneGen = this.CreateLineStat("skills", this.CreateStatFor("Skills", this.stats.skills));
+        statblock.append(ligneGen);
+        //Senses
+        ligneGen = this.CreateLineStat("senses", this.CreateStatFor("Senses", addCommaIfNotEmpty(this.stats.senses) + "passive Perception " + this.stats.perception));
+        statblock.append(ligneGen);
+        //Languages
+        ligneGen = this.CreateLineStat("languages", this.CreateStatFor("Languages", this.stats.languages));
+        statblock.append(ligneGen);
+        //Proficiency
+        ligneGen = this.CreateLineStat("prof", this.CreateStatFor("Proficiency", showPlusMinus(this.stats.prof)) +
+            this.CreateStatFor("CR", this.stats.cr) +
+            this.CreateStatFor("XP", this.stats.xp));
+        statblock.append(ligneGen);
+        //Items
+        ligneGen = this.CreateLineStat("items", this.CreateStatFor("Items", this.stats.items));
+        statblock.append(ligneGen);
+        return statblock;
     }
     CreateFeatures() {
         const traits = this.CreateDivWithClass("traits");
-        if (this.statsAutres != null) {
+        if (this.stats != null) {
             getAllEnumValues(FeatureType).forEach(type => {
                 const selectionFeature = this.features.filter(function (x) { return x.type === type; });
                 if (selectionFeature.length > 0) {
@@ -740,55 +769,60 @@ class Statblock {
         icon.className = "icon " + iconClass;
         return icon;
     }
-    CreateLineStat(forWhat, label, value) {
-        let element = this.CreateDivWithClass("item");
-        let name = this.CreateDivWithClass("name");
-        name.appendChild(this.CreateIconFor(forWhat));
-        name.innerHTML += label;
-        let contenu = document.createElement("div");
-        contenu.textContent = String(value);
-        element.appendChild(name);
-        element.appendChild(contenu);
+    CreateLineStat(iconClass, htmlContent) {
+        if (String(htmlContent) === "") {
+            return document.createElement("span");
+        }
+        let element = this.CreateDivWithClass("line");
+        let content = this.CreateDivWithClass("content");
+        content.innerHTML = htmlContent;
+        element.append(content);
+        if (iconClass != "") {
+            let icon = this.CreateIconFor(iconClass);
+            element.prepend(icon);
+        }
         return element;
     }
-    CreateLineStatAutre(forWhat, label, value) {
-        let element = this.CreateDivWithClass("item");
-        let name = document.createElement("span");
-        name.className = "name";
-        name.appendChild(this.CreateIconFor(forWhat));
-        name.innerHTML += label;
-        element.appendChild(name);
-        element.innerHTML += endsWithDot(String(value));
-        return element;
+    CreateStatFor(name, value) {
+        if (String(value) === "") {
+            return "";
+        }
+        let nameSpan = document.createElement("span");
+        nameSpan.className = "name";
+        nameSpan.innerHTML = name;
+        let contentSpan = document.createElement("span");
+        contentSpan.innerHTML = endsWithDot(String(value).trim());
+        return nameSpan.outerHTML + "&nbsp;" + contentSpan.outerHTML + " ";
     }
     CreateLineAttr(ability, statScore) {
         const attribute = document.createElement("div");
         const score = document.createElement("div");
         const mod = document.createElement("div");
-        score.textContent = ability;
+        score.textContent = ability + " " + statScore;
         if (statScore === 0) {
-            mod.innerHTML = "0";
+            mod.innerHTML = "&mdash;";
         }
         else {
-            mod.innerHTML = `${statScore}&nbsp;(${showPlusMinus(getAbilityModFromScore(statScore))})`;
+            mod.innerHTML = `${showPlusMinus(getAbilityModFromScore(statScore))}`;
         }
         attribute.appendChild(score);
         attribute.appendChild(mod);
         return attribute;
     }
     CreateFeatureSection(name) {
-        const section = this.CreateDivWithClass("section");
+        const section = this.CreateDivWithClass("separateur-section");
         const contenu = document.createElement("div");
         contenu.textContent = name;
         section.appendChild(contenu);
         return section;
     }
     CreateFeature(feature) {
-        const item = this.CreateDivWithClass("item");
-        const name = this.CreateDivWithClass("name " + FeatureRarity[feature.rarity].toLowerCase());
+        const item = this.CreateDivWithClass("item " + FeatureRarity[feature.rarity].toLowerCase());
+        const name = this.CreateDivWithClass("label");
         name.textContent += feature.name;
         if (feature.particularity != "") {
-            const partic = this.CreateDivWithClass("special");
+            const partic = document.createElement("span");
+            partic.className = "spec";
             partic.textContent = feature.particularity;
             name.appendChild(partic);
         }
@@ -799,23 +833,23 @@ class Statblock {
     GenererValeurSaves() {
         let saves = Array();
         const abi = this.abilities;
-        if (!(abi.strScore === 0 || abi.strDef === 0)) {
-            saves.push("Str&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.strScore) + abi.strDef));
+        if ((abi.strScore != 0 && abi.strTrained)) {
+            saves.push("Str&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.strScore) + this.stats.prof));
         }
-        if (!(abi.dexScore === 0 || abi.dexDef === 0)) {
-            saves.push("Dex&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.dexScore) + abi.dexDef));
+        if ((abi.dexScore != 0 && abi.dexTrained)) {
+            saves.push("Dex&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.dexScore) + this.stats.prof));
         }
-        if (!(abi.conScore === 0 || abi.conDef === 0)) {
-            saves.push("Con&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.conScore) + abi.conDef));
+        if ((abi.conScore != 0 && abi.conTrained)) {
+            saves.push("Con&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.conScore) + this.stats.prof));
         }
-        if (!(abi.intScore === 0 || abi.intDef === 0)) {
-            saves.push("Int&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.intScore) + abi.intDef));
+        if ((abi.intScore != 0 && abi.intTrained)) {
+            saves.push("Int&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.intScore) + this.stats.prof));
         }
-        if (!(abi.wisScore === 0 || abi.wisDef === 0)) {
-            saves.push("Wis&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.wisScore) + abi.wisDef));
+        if ((abi.wisScore != 0 && abi.wisTrained)) {
+            saves.push("Wis&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.wisScore) + this.stats.prof));
         }
-        if (!(abi.chaScore === 0 || abi.chaDef === 0)) {
-            saves.push("Cha&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.chaScore) + abi.chaDef));
+        if ((abi.chaScore != 0 && abi.chaTrained)) {
+            saves.push("Cha&nbsp;" + showPlusMinus(getAbilityModFromScore(abi.chaScore) + this.stats.prof));
         }
         return saves.join(", ");
     }
@@ -885,18 +919,18 @@ function loadStatblock(statblock) {
     input_role.value = String(statblock.header.role);
     input_type.value = statblock.type;
     input_keywords.value = statblock.header.keywords;
+    input_other.value = statblock.header.other;
     input_size.value = String(statblock.header.size);
-    input_origin.value = String(statblock.header.origin);
-    input_form.value = String(statblock.header.form);
-    input_movement.value = statblock.statsAutres.movement;
-    input_skills.value = statblock.statsAutres.skills;
-    input_threshold.value = statblock.statsAutres.dThreshold;
-    input_vulnerable.value = statblock.statsAutres.vulnerable;
-    input_resistant.value = statblock.statsAutres.resistant;
-    input_dImmune.value = statblock.statsAutres.dImmune;
-    input_cImmune.value = statblock.statsAutres.cImmune;
-    input_senses.value = statblock.statsAutres.senses;
-    input_languages.value = statblock.statsAutres.languages;
+    input_monstertype.value = String(statblock.header.monstertype);
+    input_movement.value = statblock.stats.speed;
+    input_skills.value = statblock.stats.skills;
+    input_threshold.value = statblock.stats.dThreshold;
+    input_vulnerable.value = statblock.stats.vulnerable;
+    input_resistant.value = statblock.stats.resistant;
+    input_dImmune.value = statblock.stats.dImmune;
+    input_cImmune.value = statblock.stats.cImmune;
+    input_senses.value = statblock.stats.senses;
+    input_languages.value = statblock.stats.languages;
     for (let i = 1; i <= 6; i++) {
         getInputById("attr" + i).value = String(statblock.abilities.abilityRanks[i - 1]);
     }
@@ -913,15 +947,21 @@ function loadStatblock(statblock) {
     //Importer overrides si différents des stats calculées
     setValueIfNotEqual(input_ac, statblock.stats.ac, input_ac.placeholder);
     setValueIfNotEqual(input_hp, statblock.stats.hp, input_hp.placeholder);
-    setValueIfNotEqual(input_init, statblock.stats.init, input_init.placeholder);
+    setValueIfNotEqual(input_init, statblock.stats.initiative, input_init.placeholder);
     setValueIfNotEqual(input_perception, statblock.stats.perception, input_perception.placeholder);
-    setValueIfNotEqual(input_stealth, statblock.stats.stealth, input_stealth.placeholder);
     setValueIfNotEqual(input_atk, statblock.stats.atk, input_atk.placeholder);
     setValueIfNotEqual(input_dcLow, statblock.stats.dc, input_dcLow.placeholder);
     setValueIfNotEqual(input_dmg, statblock.stats.dmg, input_dmg.placeholder);
     setValueIfNotEqual(input_prof, statblock.stats.prof, input_prof.placeholder);
     setValueIfNotEqual(input_cr, statblock.stats.cr, input_cr.placeholder);
     setValueIfNotEqual(input_xp, statblock.stats.xp, input_xp.placeholder);
+    //Importer trained
+    input_str_trained.checked = statblock.abilities.strTrained;
+    input_dex_trained.checked = statblock.abilities.dexTrained;
+    input_con_trained.checked = statblock.abilities.conTrained;
+    input_int_trained.checked = statblock.abilities.intTrained;
+    input_wis_trained.checked = statblock.abilities.wisTrained;
+    input_cha_trained.checked = statblock.abilities.chaTrained;
     featureManager.RemoveAllFeatures();
     statblock.features.forEach(feature => {
         featureManager.AddFeatureLineFrom(feature);
@@ -945,8 +985,8 @@ function getStats() {
     input_hp.placeholder = String(output.hp);
     input_init.placeholder = String(output.initMod);
     input_perception.placeholder = String(output.passivePercept);
-    input_stealth.placeholder = String(output.passiveStealth);
     input_speed.placeholder = String(output.speed);
+    input_tSaves.value = String(output.tSaves);
     input_atk.placeholder = String(output.atkBonus);
     input_dcLow.placeholder = String(output.dcBonus);
     input_dmg.placeholder = String(output.dmg);
@@ -956,17 +996,17 @@ function getStats() {
     input_xp.placeholder = String(output.xp);
     statblockSortie.abilities = {
         strScore: output.strScore,
-        strDef: output.strSaveMod,
+        strTrained: input_str_trained.checked,
         dexScore: output.dexScore,
-        dexDef: output.dexSaveMod,
+        dexTrained: input_dex_trained.checked,
         conScore: output.conScore,
-        conDef: output.conSaveMod,
+        conTrained: input_con_trained.checked,
         intScore: output.intScore,
-        intDef: output.intSaveMod,
+        intTrained: input_int_trained.checked,
         wisScore: output.wisScore,
-        wisDef: output.wisSaveMod,
+        wisTrained: input_wis_trained.checked,
         chaScore: output.chaScore,
-        chaDef: output.chaSaveMod,
+        chaTrained: input_cha_trained.checked,
         abilityRanks: attributes
     };
     for (let i = 1; i <= 6; i++) {
@@ -1023,8 +1063,7 @@ function initSelectLists() {
     getSelectByIdFromEnum("role", Role, Role.Striker);
     getSelectByIdFromEnum("type", StatblockType, StatblockType.Monster);
     getSelectByIdFromEnum("size", Size, Size.Medium);
-    getSelectByIdFromEnum("origin", Origin, Origin.Natural);
-    getSelectByIdFromEnum("form", Form, Form.Humanoid);
+    getSelectByIdFromEnum("monstertype", MonsterType, MonsterType.Humanoid);
     getSelectByIdFromEnum("attr1", AbilityAttr, AbilityAttr.Low);
     getSelectByIdFromEnum("attr2", AbilityAttr, AbilityAttr.Low);
     getSelectByIdFromEnum("attr3", AbilityAttr, AbilityAttr.Low);
@@ -1043,22 +1082,33 @@ function prepareMonster() {
         rank: Number(input_rank.value),
         role: Number(input_role.value),
         keywords: input_keywords.value,
+        other: input_other.value,
         size: Number(input_size.value),
-        origin: Number(input_origin.value),
-        form: Number(input_form.value)
+        monstertype: Number(input_monstertype.value)
     };
     statblockSortie.stats = {
         ac: Number(getValueOrPlaceholder(input_ac)),
         hp: Number(getValueOrPlaceholder(input_hp)),
-        init: Number(getValueOrPlaceholder(input_init)),
+        initiative: Number(getValueOrPlaceholder(input_init)),
         perception: Number(getValueOrPlaceholder(input_perception)),
-        stealth: Number(getValueOrPlaceholder(input_stealth)),
         atk: Number(getValueOrPlaceholder(input_atk)),
         dc: Number(getValueOrPlaceholder(input_dcLow)),
         dmg: Number(getValueOrPlaceholder(input_dmg)),
         prof: Number(getValueOrPlaceholder(input_prof)),
         cr: getValueOrPlaceholder(input_cr),
-        xp: Number(getValueOrPlaceholder(input_xp))
+        xp: Number(getValueOrPlaceholder(input_xp)),
+        speed: input_movement.value,
+        skills: input_skills.value,
+        dThreshold: input_threshold.value,
+        vulnerable: input_vulnerable.value,
+        resistant: input_resistant.value,
+        dImmune: input_dImmune.value,
+        cImmune: input_cImmune.value,
+        senses: input_senses.value,
+        languages: input_languages.value,
+        items: input_items.value,
+        reach: input_reach.value,
+        range: input_range.value
     };
     statblockSortie.abilities = {
         strScore: Number(getValueOrPlaceholder(getInputById("attr1score"))),
@@ -1067,24 +1117,13 @@ function prepareMonster() {
         intScore: Number(getValueOrPlaceholder(getInputById("attr4score"))),
         wisScore: Number(getValueOrPlaceholder(getInputById("attr5score"))),
         chaScore: Number(getValueOrPlaceholder(getInputById("attr6score"))),
-        strDef: statblockSortie.abilities.strDef,
-        dexDef: statblockSortie.abilities.dexDef,
-        conDef: statblockSortie.abilities.conDef,
-        intDef: statblockSortie.abilities.intDef,
-        wisDef: statblockSortie.abilities.wisDef,
-        chaDef: statblockSortie.abilities.chaDef,
+        strTrained: statblockSortie.abilities.strTrained,
+        dexTrained: statblockSortie.abilities.dexTrained,
+        conTrained: statblockSortie.abilities.conTrained,
+        intTrained: statblockSortie.abilities.intTrained,
+        wisTrained: statblockSortie.abilities.wisTrained,
+        chaTrained: statblockSortie.abilities.chaTrained,
         abilityRanks: statblockSortie.abilities.abilityRanks
-    };
-    statblockSortie.statsAutres = {
-        movement: input_movement.value,
-        skills: input_skills.value,
-        dThreshold: input_threshold.value,
-        vulnerable: input_vulnerable.value,
-        resistant: input_resistant.value,
-        dImmune: input_dImmune.value,
-        cImmune: input_cImmune.value,
-        senses: input_senses.value,
-        languages: input_languages.value
     };
     statblockSortie.features = featureManager.GetFeatures();
 }
@@ -1130,6 +1169,7 @@ function showInfo(id) {
 }
 function quickTemplateClick(idTemplate) {
     featureManager.AddFeatureLineFrom(featureManager.templates[idTemplate]);
+    updatePreview();
 }
 function getAbilityScoreFor(order) {
     let score = 0;
@@ -1235,77 +1275,78 @@ class MonsterOutput {
 class StatsGenerator {
     constructor() {
         this.stats = new Array();
-        this.stats.push(new StatLine(0, 10, 16, 1, 9, 1, 1, { high: 3, med: 1, low: 0 }, 25));
-        this.stats.push(new StatLine(1, 11, 22, 2, 10, 2, 2, { high: 3, med: 1, low: 0 }, 50));
-        this.stats.push(new StatLine(2, 12, 28, 2, 10, 4, 2, { high: 3, med: 1, low: 0 }, 112.5));
-        this.stats.push(new StatLine(3, 12, 34, 2, 10, 8, 2, { high: 3, med: 1, low: 0 }, 175));
-        this.stats.push(new StatLine(4, 12, 40, 2, 10, 10, 2, { high: 4, med: 1, low: 0 }, 275));
-        this.stats.push(new StatLine(5, 13, 48, 3, 11, 13, 3, { high: 4, med: 1, low: 0 }, 450));
-        this.stats.push(new StatLine(6, 14, 57, 3, 11, 15, 3, { high: 4, med: 2, low: 0 }, 575));
-        this.stats.push(new StatLine(7, 14, 66, 3, 11, 18, 3, { high: 4, med: 2, low: 0 }, 725));
-        this.stats.push(new StatLine(8, 14, 75, 3, 11, 20, 3, { high: 5, med: 2, low: 0 }, 975));
-        this.stats.push(new StatLine(9, 15, 83, 4, 12, 25, 4, { high: 5, med: 2, low: 0 }, 1250));
-        this.stats.push(new StatLine(10, 15, 92, 4, 12, 28, 4, { high: 5, med: 2, low: 0 }, 1475));
-        this.stats.push(new StatLine(11, 15, 98, 4, 12, 31, 4, { high: 5, med: 2, low: 0 }, 1800));
-        this.stats.push(new StatLine(12, 16, 104, 4, 12, 34, 4, { high: 5, med: 3, low: 1 }, 2100));
-        this.stats.push(new StatLine(13, 17, 111, 5, 13, 37, 5, { high: 5, med: 3, low: 1 }, 2500));
-        this.stats.push(new StatLine(14, 17, 117, 5, 13, 39, 5, { high: 5, med: 3, low: 1 }, 2875));
-        this.stats.push(new StatLine(15, 17, 124, 5, 13, 47, 5, { high: 5, med: 3, low: 1 }, 3250));
-        this.stats.push(new StatLine(16, 17, 130, 5, 13, 50, 5, { high: 6, med: 3, low: 1 }, 3750));
-        this.stats.push(new StatLine(17, 18, 137, 6, 14, 53, 6, { high: 6, med: 3, low: 1 }, 4500));
-        this.stats.push(new StatLine(18, 18, 144, 6, 14, 56, 6, { high: 6, med: 4, low: 1 }, 5000));
-        this.stats.push(new StatLine(19, 18, 151, 6, 14, 59, 6, { high: 6, med: 4, low: 1 }, 5500));
-        this.stats.push(new StatLine(20, 19, 158, 6, 14, 63, 6, { high: 6, med: 4, low: 1 }, 6250));
-        this.stats.push(new StatLine(21, 20, 165, 7, 15, 72, 7, { high: 6, med: 4, low: 1 }, 8250));
-        this.stats.push(new StatLine(22, 20, 172, 7, 15, 76, 7, { high: 6, med: 4, low: 1 }, 10250));
-        this.stats.push(new StatLine(23, 20, 180, 7, 15, 79, 7, { high: 6, med: 4, low: 1 }, 12500));
-        this.stats.push(new StatLine(24, 20, 187, 7, 15, 83, 7, { high: 7, med: 5, low: 2 }, 15500));
+        this.stats.push(new StatLine(0, 25));
+        this.stats.push(new StatLine(1, 50));
+        this.stats.push(new StatLine(2, 112.5));
+        this.stats.push(new StatLine(3, 175));
+        this.stats.push(new StatLine(4, 275));
+        this.stats.push(new StatLine(5, 450));
+        this.stats.push(new StatLine(6, 575));
+        this.stats.push(new StatLine(7, 725));
+        this.stats.push(new StatLine(8, 975));
+        this.stats.push(new StatLine(9, 1250));
+        this.stats.push(new StatLine(10, 1475));
+        this.stats.push(new StatLine(11, 1800));
+        this.stats.push(new StatLine(12, 2100));
+        this.stats.push(new StatLine(13, 2500));
+        this.stats.push(new StatLine(14, 2875));
+        this.stats.push(new StatLine(15, 3250));
+        this.stats.push(new StatLine(16, 3750));
+        this.stats.push(new StatLine(17, 4500));
+        this.stats.push(new StatLine(18, 5000));
+        this.stats.push(new StatLine(19, 5500));
+        this.stats.push(new StatLine(20, 6250));
+        this.stats.push(new StatLine(21, 8250));
+        this.stats.push(new StatLine(22, 10250));
+        this.stats.push(new StatLine(23, 12500));
+        this.stats.push(new StatLine(24, 15500));
+        this.stats.push(new StatLine(25, 18750));
+        this.stats.push(new StatLine(26, 22500));
+        this.stats.push(new StatLine(27, 26250));
+        this.stats.push(new StatLine(28, 30000));
+        this.stats.push(new StatLine(29, 33750));
+        this.stats.push(new StatLine(30, 38750));
         this.ranks = new Array();
-        this.ranks.push(new RankLine(Rank.Minion, 0.2, -1, -1, TrainedValue.Untrained, 0.75, 0.25));
-        this.ranks.push(new RankLine(Rank.Grunt, 1, 0, 0, TrainedValue.Untrained, 1, 1));
-        this.ranks.push(new RankLine(Rank.Elite, 2, 1, 1, TrainedValue.Half, 1.1, 2));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 3"], 3, 2, 2, TrainedValue.Trained, 1.2, 3));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 4"], 4, 2, 2, TrainedValue.Trained, 1.2, 4));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 5"], 5, 2, 2, TrainedValue.Trained, 1.2, 5));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 6"], 6, 2, 2, TrainedValue.Trained, 1.2, 6));
-        this.ranks.push(new RankLine(Rank["Paragon vs. 7"], 7, 2, 2, TrainedValue.Trained, 1.2, 7));
+        this.ranks.push(new RankLine(Rank.Minion, 0.2, 0, 0, false, 0.75, 0.25, 1));
+        this.ranks.push(new RankLine(Rank.Grunt, 1, 0, 0, false, 1, 1, 2));
+        this.ranks.push(new RankLine(Rank.Elite, 2, 1, 1, true, 1.1, 2, 3));
+        this.ranks.push(new RankLine(Rank["Paragon T3"], 3, 2, 2, true, 1.2, 3, 3));
+        this.ranks.push(new RankLine(Rank["Paragon T4"], 4, 2, 2, true, 1.2, 4, 3));
+        this.ranks.push(new RankLine(Rank["Paragon T5"], 5, 2, 2, true, 1.2, 5, 3));
+        this.ranks.push(new RankLine(Rank["Paragon T6"], 6, 2, 2, true, 1.2, 6, 3));
+        this.ranks.push(new RankLine(Rank["Paragon T7"], 7, 2, 2, true, 1.2, 7, 3));
         this.roles = new Array();
-        this.roles.push(new RoleLine(Role.Controller, 2, 1, 1, -1, -1, 0.5, true, 0, false, false));
-        this.roles.push(new RoleLine(Role.Defender, 4, 0.75, 2, 0, 0, 0.5, false, -5, false, false));
-        this.roles.push(new RoleLine(Role.Lurker, -4, 0.75, -2, +2, +1, 1.25, false, 5, false, true));
-        this.roles.push(new RoleLine(Role.Scout, -2, 1, -1, -1, -1, 0.75, false, 10, true, true));
-        this.roles.push(new RoleLine(Role.Striker, 0, 1, 0, 0, 0, 1, false, 0, false, false));
-        this.roles.push(new RoleLine(Role.Supporter, -1, 1.25, -1, -1, -1, 0.75, true, 0, true, false));
+        this.roles.push(new RoleLine(Role.Controller, true, 0, 2, 1, 0, 0.75, false, false));
+        this.roles.push(new RoleLine(Role.Defender, false, -5, 4, 0.75, 1, 0.75, false, false));
+        this.roles.push(new RoleLine(Role.Lurker, false, 0, -4, 0.75, -1, 1.25, false, true));
+        this.roles.push(new RoleLine(Role.Skirmisher, false, 5, -2, 0.75, 0, 1, true, false));
+        this.roles.push(new RoleLine(Role.Striker, false, 0, 0, 1, 0, 1, false, false));
+        this.roles.push(new RoleLine(Role.Supporter, true, 0, 0, 1.25, 0, 0.75, false, false));
     }
     getMonsterStats(input) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e;
         let output = new MonsterOutput();
         const baseStats = this.getStats(input.level);
         const role = this.getRole(input.role);
         const rank = this.getRank(input.rank);
-        output.ac = baseStats.baseAc + role.acMod + rank.acMod;
-        output.hp = Math.round(baseStats.baseHp * role.hpMult * rank.hpMult);
-        output.atkBonus = baseStats.atkMod + role.atkMod;
-        output.dcBonus = baseStats.dcMod + role.dcMod;
+        const lvl = input.level;
+        output.ac = 12 + Math.floor(lvl / 4) + role.acMod + rank.acMod;
+        output.prof = 1 + Math.floor((lvl + 3) / 4);
+        output.atkBonus = output.prof;
+        output.dcBonus = 8 + output.prof;
+        output.hp = Math.round((16 + lvl * 7) * role.hpMult * rank.hpMult);
+        output.dmg = Math.max(1, Math.round((lvl * 3) * rank.dmgMult * role.dmgMult));
+        output.tSaves = rank.tSaves + role.tSaves;
         output.speed = (_a = input.baseSpeed) !== null && _a !== void 0 ? _a : 30 + role.speedMod;
-        output.prof = baseStats.prof;
-        output.dmg = Math.round(baseStats.baseDmg * rank.dmgMult * role.dmgMult);
         this.getAbilityModifiers(input, output);
         output.initMod = (_c = getAbilityModFromScore((_b = input.abilitiiesOverrides[1]) !== null && _b !== void 0 ? _b : output.dexScore)) !== null && _c !== void 0 ? _c : 0;
-        output.passiveStealth = (_e = 10 + getAbilityModFromScore((_d = input.abilitiiesOverrides[1]) !== null && _d !== void 0 ? _d : output.dexScore)) !== null && _e !== void 0 ? _e : 0;
-        output.passivePercept = (_g = 10 + getAbilityModFromScore((_f = input.abilitiiesOverrides[4]) !== null && _f !== void 0 ? _f : output.wisScore)) !== null && _g !== void 0 ? _g : 0;
-        if (this.getRole(input.role).trainedInit)
-            output.initMod += baseStats.prof;
-        if (this.getRank(input.rank).initMod == TrainedValue.Trained) {
-            output.initMod += baseStats.prof;
-        }
-        else if (this.getRank(input.rank).initMod == TrainedValue.Half) {
-            output.initMod += baseStats.halfProf;
-        }
-        if (this.getRole(input.role).trainedStealth)
-            output.passiveStealth += baseStats.prof;
+        output.passivePercept = (_e = 10 + getAbilityModFromScore((_d = input.abilitiiesOverrides[4]) !== null && _d !== void 0 ? _d : output.wisScore)) !== null && _e !== void 0 ? _e : 0;
+        if (this.getRole(input.role).initBonus)
+            output.initMod += output.prof;
+        if (this.getRank(input.rank).initBonus)
+            output.initMod += output.prof;
         if (this.getRole(input.role).trainedPerception)
-            output.passivePercept += baseStats.prof;
+            output.passivePercept += output.prof;
         let xpTable = new ExperienceToChallengeRating();
         output.xp = Math.floor(baseStats.xp * rank.xpMult);
         output.cr = xpTable.getCrFromXp(output.xp);
@@ -1369,60 +1410,54 @@ class StatsGenerator {
         switch (abilityValue) {
             case AbilityAttr.High:
                 mod = baseStats.abilityMods.high;
-                prof = baseStats.prof;
                 break;
-            case AbilityAttr.Med:
-                mod = baseStats.abilityMods.med;
-                prof = baseStats.halfProf;
+            case AbilityAttr.Mid:
+                mod = baseStats.abilityMods.mid;
                 break;
             default:
                 mod = baseStats.abilityMods.low;
-                prof = 0;
                 break;
         }
         mod = mod + this.getRank(rank).attrMod;
-        save = 0 + this.getRole(role).saveMod + prof;
+        save = 0;
         return { abilityScore: getAbilityScoreFromMod(mod), save: save };
     }
 }
 class RoleLine {
-    constructor(role, acMod, hpMult, saveMod, atkMod, dcMod, dmgMult, init, speedMod, percept, stealth) {
+    constructor(role, init, speedMod, acMod, hpMult, tSaves, dmgMult, percept, stealth) {
         this.role = role;
-        this.acMod = acMod;
-        this.saveMod = saveMod;
-        this.hpMult = hpMult;
-        this.atkMod = atkMod;
-        this.dcMod = dcMod;
-        this.dmgMult = dmgMult;
+        this.initBonus = init;
         this.speedMod = speedMod;
+        this.acMod = acMod;
+        this.hpMult = hpMult;
+        this.tSaves = tSaves;
+        this.dmgMult = dmgMult;
         this.trainedPerception = percept;
         this.trainedStealth = stealth;
-        this.trainedInit = init;
     }
 }
 class RankLine {
-    constructor(rank, hpMult, acMod, attrMod, trainedInit, dmgMult, xpMult) {
+    constructor(rank, hpMult, acMod, attrMod, trainedInit, dmgMult, xpMult, tSaves) {
         this.rank = rank;
-        this.hpMult = hpMult;
         this.acMod = acMod;
+        this.hpMult = hpMult;
+        this.tSaves = tSaves;
+        this.initBonus = trainedInit;
         this.attrMod = attrMod;
-        this.initMod = trainedInit;
         this.dmgMult = dmgMult;
         this.xpMult = xpMult;
     }
 }
 class StatLine {
-    constructor(level, baseAc, baseHp, atkMod, dcMod, baseDmg, prof, abilityMods, xp) {
+    constructor(level, xp) {
         this.level = level;
-        this.baseAc = baseAc;
-        this.baseHp = baseHp;
-        this.atkMod = atkMod;
-        this.dcMod = dcMod;
-        this.baseDmg = baseDmg;
-        this.prof = prof;
-        this.halfProf = Math.floor(prof / 2);
-        this.abilityMods = abilityMods;
         this.xp = xp;
+        if (level < 8) {
+            this.abilityMods = { low: Math.floor(level / 12) - 1, mid: Math.floor(level / 8) + 1, high: Math.floor(level / 4) + 3 };
+        }
+        else {
+            this.abilityMods = { low: Math.floor(level / 12) - 1, mid: Math.floor(level / 8) + 1, high: Math.floor((level - 8) / 8) + 5 };
+        }
     }
 }
 class XpLine {
@@ -1499,18 +1534,18 @@ var Rank;
     Rank[Rank["Minion"] = 0] = "Minion";
     Rank[Rank["Grunt"] = 1] = "Grunt";
     Rank[Rank["Elite"] = 2] = "Elite";
-    Rank[Rank["Paragon vs. 3"] = 3] = "Paragon vs. 3";
-    Rank[Rank["Paragon vs. 4"] = 4] = "Paragon vs. 4";
-    Rank[Rank["Paragon vs. 5"] = 5] = "Paragon vs. 5";
-    Rank[Rank["Paragon vs. 6"] = 6] = "Paragon vs. 6";
-    Rank[Rank["Paragon vs. 7"] = 7] = "Paragon vs. 7";
+    Rank[Rank["Paragon T3"] = 3] = "Paragon T3";
+    Rank[Rank["Paragon T4"] = 4] = "Paragon T4";
+    Rank[Rank["Paragon T5"] = 5] = "Paragon T5";
+    Rank[Rank["Paragon T6"] = 6] = "Paragon T6";
+    Rank[Rank["Paragon T7"] = 7] = "Paragon T7";
 })(Rank || (Rank = {}));
 var Role;
 (function (Role) {
     Role[Role["Controller"] = 1] = "Controller";
     Role[Role["Defender"] = 2] = "Defender";
     Role[Role["Lurker"] = 3] = "Lurker";
-    Role[Role["Scout"] = 4] = "Scout";
+    Role[Role["Skirmisher"] = 4] = "Skirmisher";
     Role[Role["Striker"] = 5] = "Striker";
     Role[Role["Supporter"] = 6] = "Supporter";
 })(Role || (Role = {}));
@@ -1527,7 +1562,7 @@ var Ability;
 var AbilityAttr;
 (function (AbilityAttr) {
     AbilityAttr[AbilityAttr["Low"] = 0] = "Low";
-    AbilityAttr[AbilityAttr["Med"] = 1] = "Med";
+    AbilityAttr[AbilityAttr["Mid"] = 1] = "Mid";
     AbilityAttr[AbilityAttr["High"] = 2] = "High";
 })(AbilityAttr || (AbilityAttr = {}));
 var TrainedValue;
@@ -1551,25 +1586,24 @@ var Size;
     Size[Size["Huge"] = 4] = "Huge";
     Size[Size["Gargantuan"] = 5] = "Gargantuan";
 })(Size || (Size = {}));
-var Origin;
-(function (Origin) {
-    Origin[Origin["Aberrant"] = 0] = "Aberrant";
-    Origin[Origin["Arcane"] = 1] = "Arcane";
-    Origin[Origin["Corrupted"] = 2] = "Corrupted";
-    Origin[Origin["Elemental"] = 3] = "Elemental";
-    Origin[Origin["Fey"] = 4] = "Fey";
-    Origin[Origin["Immortal"] = 5] = "Immortal";
-    Origin[Origin["Natural"] = 6] = "Natural";
-    Origin[Origin["Spiritual"] = 7] = "Spiritual";
-})(Origin || (Origin = {}));
-var Form;
-(function (Form) {
-    Form[Form["Animate"] = 0] = "Animate";
-    Form[Form["Beast"] = 1] = "Beast";
-    Form[Form["Hazard"] = 2] = "Hazard";
-    Form[Form["Humanoid"] = 3] = "Humanoid";
-    Form[Form["Monstrosity"] = 4] = "Monstrosity";
-})(Form || (Form = {}));
+var MonsterType;
+(function (MonsterType) {
+    MonsterType[MonsterType["Aberration"] = 0] = "Aberration";
+    MonsterType[MonsterType["Beast"] = 1] = "Beast";
+    MonsterType[MonsterType["Celestial"] = 2] = "Celestial";
+    MonsterType[MonsterType["Construct"] = 3] = "Construct";
+    MonsterType[MonsterType["Dragon"] = 4] = "Dragon";
+    MonsterType[MonsterType["Elemental"] = 5] = "Elemental";
+    MonsterType[MonsterType["Fey"] = 6] = "Fey";
+    MonsterType[MonsterType["Fiend"] = 7] = "Fiend";
+    MonsterType[MonsterType["Giant"] = 8] = "Giant";
+    MonsterType[MonsterType["Humanoid"] = 9] = "Humanoid";
+    MonsterType[MonsterType["Monstrosity"] = 10] = "Monstrosity";
+    MonsterType[MonsterType["Ooze"] = 11] = "Ooze";
+    MonsterType[MonsterType["Plant"] = 12] = "Plant";
+    MonsterType[MonsterType["Undead"] = 13] = "Undead";
+    MonsterType[MonsterType["Other"] = 14] = "Other";
+})(MonsterType || (MonsterType = {}));
 var FeatureType;
 (function (FeatureType) {
     FeatureType[FeatureType["Trait"] = 0] = "Trait";
@@ -1709,5 +1743,12 @@ function getNumberOrNull(value) {
     }
     else
         return value;
+}
+function addCommaIfNotEmpty(value) {
+    if (typeof (value) === "string" && value == "") {
+        return value;
+    }
+    else
+        return String(value).trim() + ", ";
 }
 //# sourceMappingURL=code.js.map
