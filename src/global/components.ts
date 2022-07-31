@@ -6,37 +6,33 @@ type Feature = {
     description: string
 }
 
-type HighMedLow = {
+type HighMidLow = {
     high: number
-    med: number
+    mid: number
     low: number
 }
 
 class RoleLine {
     readonly role: Role
-    readonly acMod: number
-    readonly saveMod: number
-    readonly hpMult: number
-    readonly atkMod: number
-    readonly dcMod: number
-    readonly dmgMult: number
+    readonly initBonus: boolean
     readonly speedMod: number
+    readonly acMod: number
+    readonly hpMult: number
+    readonly tSaves: number
+    readonly dmgMult: number
     readonly trainedPerception: boolean
     readonly trainedStealth: boolean
-    readonly trainedInit: boolean
 
-    constructor(role: Role, acMod: number, hpMult: number, saveMod: number, atkMod: number, dcMod: number, dmgMult: number, init: boolean, speedMod: number, percept: boolean, stealth: boolean) {
+    constructor(role: Role, init: boolean, speedMod: number, acMod: number, hpMult: number, tSaves: number, dmgMult: number, percept: boolean, stealth: boolean) {
         this.role = role
-        this.acMod = acMod
-        this.saveMod = saveMod
-        this.hpMult = hpMult
-        this.atkMod = atkMod
-        this.dcMod = dcMod
-        this.dmgMult = dmgMult
+        this.initBonus = init
         this.speedMod = speedMod
+        this.acMod = acMod
+        this.hpMult = hpMult
+        this.tSaves = tSaves
+        this.dmgMult = dmgMult
         this.trainedPerception = percept
         this.trainedStealth = stealth
-        this.trainedInit = init
     }
 }
 
@@ -45,16 +41,20 @@ class RankLine {
     readonly hpMult: number
     readonly acMod: number
     readonly attrMod: number
-    readonly initMod: TrainedValue
+    readonly initBonus: boolean
     readonly dmgMult: number
     readonly xpMult: number
+    readonly tSaves: number
 
-    constructor(rank: Rank, hpMult: number, acMod: number, attrMod: number, trainedInit: TrainedValue, dmgMult: number, xpMult: number) {
+    constructor(rank: Rank, hpMult: number, acMod: number, attrMod: number, trainedInit: boolean, dmgMult: number, xpMult: number, tSaves: number) {
         this.rank = rank
-        this.hpMult = hpMult
+
         this.acMod = acMod
+        this.hpMult = hpMult
+        this.tSaves = tSaves
+        this.initBonus = trainedInit
+
         this.attrMod = attrMod
-        this.initMod = trainedInit
         this.dmgMult = dmgMult
         this.xpMult = xpMult
     }
@@ -62,27 +62,18 @@ class RankLine {
 
 class StatLine {
     readonly level: number
-    readonly baseAc: number
-    readonly baseHp: number
-    readonly atkMod: number
-    readonly dcMod: number
-    readonly baseDmg: number
-    readonly prof: number
-    readonly halfProf: number
-    readonly abilityMods: HighMedLow
+    readonly abilityMods: HighMidLow
     readonly xp: number
 
-    constructor(level: number, baseAc: number, baseHp: number, atkMod: number, dcMod: number, baseDmg: number, prof: number, abilityMods: HighMedLow, xp: number) {
+    constructor(level: number, xp: number) {
         this.level = level
-        this.baseAc = baseAc
-        this.baseHp = baseHp
-        this.atkMod = atkMod
-        this.dcMod = dcMod
-        this.baseDmg = baseDmg
-        this.prof = prof
-        this.halfProf = Math.floor(prof/2)
-        this.abilityMods = abilityMods
         this.xp = xp
+        if(level < 8){
+            this.abilityMods = {low: Math.floor(level/12) - 1, mid: Math.floor(level/8) + 1, high: Math.floor(level/4) + 3}
+        }
+        else {
+            this.abilityMods = {low: Math.floor(level/12) - 1, mid: Math.floor(level/8) + 1, high: Math.floor((level-8)/8) + 5}
+        }
     }
 }
 

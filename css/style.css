@@ -3,10 +3,11 @@
     pour générer le filtre pour colorer les icones voir 
     https://codepen.io/sosuke/pen/Pjoqqp
 */
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 .monster {
   --colorlight: #b85b56;
-  --color: #953D2F;
-  --colordark: #7F291B;
+  --color: #821517;
+  --colordark: #5e0709;
   --background: #FAF6F6;
   --section-background: #ECDCD9;
   --t-color: invert(28%) sepia(25%) saturate(2088%) hue-rotate(327deg) brightness(93%) contrast(88%);
@@ -35,9 +36,9 @@
 
 .statblock, .monster, .hazard, .npc {
   --gray: RGB(182, 176, 177);
-  --common: RGB(89, 188, 6);
-  --uncommon: RGB(208, 171, 17);
-  --rare: RGB(207, 17, 17);
+  --common: RGB(27, 145, 43);
+  --uncommon: RGB(177, 148, 3);
+  --rare: RGB(148, 18, 18);
   background-color: var(--background);
   padding: 3px;
   width: 400px;
@@ -49,14 +50,12 @@
   font-size: 15px;
   /* GÉNÉRAL */
   /* HEADER */
-  /* STATS */
   /* ATTRIBUTES */
-  /* AUTRES */
+  /* STATS */
   /* TRAITS */
 }
 
 .statblock .name, .monster .name, .hazard .name, .npc .name {
-  text-transform: uppercase;
   font-weight: 700;
 }
 
@@ -68,126 +67,31 @@
 }
 
 .statblock .header .header-top, .monster .header .header-top, .hazard .header .header-top, .npc .header .header-top {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  line-height: 24px;
-}
-
-.statblock .header .header-top .identification, .monster .header .header-top .identification, .hazard .header .header-top .identification, .npc .header .header-top .identification {
-  -webkit-box-flex: 1;
-      -ms-flex: 1 1 50%;
-          flex: 1 1 50%;
   padding: 4px 8px;
   background-color: var(--color);
-  -webkit-clip-path: polygon(0 0, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
-          clip-path: polygon(0 0, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
 }
 
-.statblock .header .header-top .titletext, .monster .header .header-top .titletext, .hazard .header .header-top .titletext, .npc .header .header-top .titletext {
-  font-variant: small-caps;
-  text-transform: capitalize;
-  font-size: 1.4em;
-  font-weight: 600;
+.statblock .header .header-top .name, .monster .header .header-top .name, .hazard .header .header-top .name, .npc .header .header-top .name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.6em;
+  padding-top: 5px;
 }
 
-.statblock .header .header-top .titletext span, .monster .header .header-top .titletext span, .hazard .header .header-top .titletext span, .npc .header .header-top .titletext span {
-  display: inline-block;
-  vertical-align: top;
-  margin-left: 4px;
-}
-
-.statblock .header .header-top .titletext .icon, .monster .header .header-top .titletext .icon, .hazard .header .header-top .titletext .icon, .npc .header .header-top .titletext .icon {
-  height: 25px;
-  background-size: 22px 22px;
-  margin-left: 5px;
-  margin-right: -5px;
-}
-
-.statblock .header .header-top .icons, .monster .header .header-top .icons, .hazard .header .header-top .icons, .npc .header .header-top .icons {
-  margin-left: -5px;
-  -webkit-box-flex: 0;
-      -ms-flex: 0 0 80px;
-          flex: 0 0 80px;
-  text-align: center;
-}
-
-.statblock .header .header-top .icons .titletext, .monster .header .header-top .icons .titletext, .hazard .header .header-top .icons .titletext, .npc .header .header-top .icons .titletext {
-  margin-bottom: -5px;
-  margin-top: 4px;
-}
-
-.statblock .header .header-top .icons .icon, .monster .header .header-top .icons .icon, .hazard .header .header-top .icons .icon, .npc .header .header-top .icons .icon {
-  -webkit-filter: invert(100%);
-          filter: invert(100%);
+.statblock .header .header-top .subtitle, .monster .header .header-top .subtitle, .hazard .header .header-top .subtitle, .npc .header .header-top .subtitle {
+  font-style: italic;
 }
 
 .statblock .header .keywords, .monster .header .keywords, .hazard .header .keywords, .npc .header .keywords {
-  border-top: 1px solid var(--colorlight);
-  text-align: center;
   color: var(--background);
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  font-weight: 700;
-  padding: 2px;
+  font-weight: 600;
+  font-size: 1.2em;
+  padding: 1px 5px 5px 5px;
 }
 
-.statblock .header .keywords > div, .monster .header .keywords > div, .hazard .header .keywords > div, .npc .header .keywords > div {
-  display: inline-block;
-}
-
-.statblock .header .keywords > div + div::before, .monster .header .keywords > div + div::before, .hazard .header .keywords > div + div::before, .npc .header .keywords > div + div::before {
-  content: '';
-  display: inline-block;
-  width: 0.45em;
-  height: 0.45em;
-  border-radius: 4px;
-  background-color: var(--colorlight);
-  vertical-align: top;
-  margin: 7px 7px 0 7px;
-}
-
-.statblock .stats, .monster .stats, .hazard .stats, .npc .stats {
-  margin: 8px 3px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.statblock .stats > div, .monster .stats > div, .hazard .stats > div, .npc .stats > div {
-  -webkit-box-flex: 1;
-      -ms-flex: 1 0 45%;
-          flex: 1 0 45%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  padding: 0 5px;
-}
-
-.statblock .stats > div + div, .monster .stats > div + div, .hazard .stats > div + div, .npc .stats > div + div {
-  border-left: 1px dotted var(--color);
-}
-
-.statblock .stats .item div, .monster .stats .item div, .hazard .stats .item div, .npc .stats .item div {
-  display: inline-block;
-}
-
-.statblock .stats .item div:nth-child(2), .monster .stats .item div:nth-child(2), .hazard .stats .item div:nth-child(2), .npc .stats .item div:nth-child(2) {
-  float: right;
-}
-
-.statblock .stats .item .name, .monster .stats .item .name, .hazard .stats .item .name, .npc .stats .item .name {
-  color: var(--color);
-}
-
-.statblock .stats .icon, .monster .stats .icon, .hazard .stats .icon, .npc .stats .icon {
-  margin: 0 5px;
-  -webkit-filter: var(--t-color);
-          filter: var(--t-color);
+.statblock .header .keywords i.icon, .monster .header .keywords i.icon, .hazard .header .keywords i.icon, .npc .header .keywords i.icon {
+  -webkit-filter: invert(95%);
+          filter: invert(95%);
+  margin-right: 3px;
 }
 
 .statblock .attributes, .monster .attributes, .hazard .attributes, .npc .attributes {
@@ -196,7 +100,7 @@
   display: -ms-flexbox;
   display: flex;
   background-color: var(--color);
-  margin: 8px;
+  margin: 6px;
   padding-top: 2px;
   padding-bottom: 2px;
 }
@@ -210,108 +114,168 @@
 .statblock .attributes > div > div, .monster .attributes > div > div, .hazard .attributes > div > div, .npc .attributes > div > div {
   color: var(--background);
   text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.3em;
 }
 
 .statblock .attributes > div > div:nth-child(1), .monster .attributes > div > div:nth-child(1), .hazard .attributes > div > div:nth-child(1), .npc .attributes > div > div:nth-child(1) {
-  background-color: var(--colordark);
-  text-transform: uppercase;
+  line-height: 1.3em;
+  font-size: 0.8em;
   font-weight: 700;
+  background-color: var(--colordark);
 }
 
 .statblock .attributes > div + div, .monster .attributes > div + div, .hazard .attributes > div + div, .npc .attributes > div + div {
-  border-left: 1px solid var(--colorlight);
+  border-left: 2px solid var(--colorlight);
 }
 
-.statblock .autres, .monster .autres, .hazard .autres, .npc .autres {
-  margin: 8px;
+.statblock .stats, .monster .stats, .hazard .stats, .npc .stats {
+  margin: 8px 3px;
 }
 
-.statblock .autres div, .monster .autres div, .hazard .autres div, .npc .autres div {
-  margin-left: 28px;
-  text-indent: -28px;
+.statblock .stats .line, .monster .stats .line, .hazard .stats .line, .npc .stats .line {
+  padding-left: 34px;
 }
 
-.statblock .autres .name, .monster .autres .name, .hazard .autres .name, .npc .autres .name {
-  color: var(--color);
-  margin-right: 5px;
-}
-
-.statblock .autres .icon, .monster .autres .icon, .hazard .autres .icon, .npc .autres .icon {
-  margin: 0 5px;
+.statblock .stats .line .icon, .monster .stats .line .icon, .hazard .stats .line .icon, .npc .stats .line .icon {
+  vertical-align: top;
+  margin: 2px 5px 0 -27px;
   -webkit-filter: var(--t-color);
           filter: var(--t-color);
+}
+
+.statblock .stats .line .content, .monster .stats .line .content, .hazard .stats .line .content, .npc .stats .line .content {
+  display: inline-block;
+}
+
+.statblock .stats .line .content .name, .monster .stats .line .content .name, .hazard .stats .line .content .name, .npc .stats .line .content .name {
+  color: var(--color);
+}
+
+.statblock .stats hr, .monster .stats hr, .hazard .stats hr, .npc .stats hr {
+  margin: 2px 6px;
+  border-top: 2px solid var(--color);
 }
 
 .statblock .traits, .monster .traits, .hazard .traits, .npc .traits {
   margin: 8px;
 }
 
-.statblock .traits .section, .monster .traits .section, .hazard .traits .section, .npc .traits .section {
+.statblock .traits .separateur-section, .monster .traits .separateur-section, .hazard .traits .separateur-section, .npc .traits .separateur-section {
   background-color: var(--section-background);
-  color: var(--section-background);
+  color: white;
   text-transform: uppercase;
-  font-size: 0.9em;
+  font-size: 0.7em;
   font-weight: 800;
-  margin: 5px 0;
-  border-bottom: 3px solid var(--color);
+  margin: 5px 0 0 0;
+  border-bottom: 2px solid var(--color);
+  line-height: 1.4em;
 }
 
-.statblock .traits .section div, .monster .traits .section div, .hazard .traits .section div, .npc .traits .section div {
+.statblock .traits .separateur-section div, .monster .traits .separateur-section div, .hazard .traits .separateur-section div, .npc .traits .separateur-section div {
   display: inline-block;
-  padding: 1px 30px 0 15px;
+  padding: 2px 20px 0 30px;
   background-color: var(--color);
-  -webkit-clip-path: polygon(0 0, calc(100% - 15px) 0%, 100% 100%, 0% 100%);
-          clip-path: polygon(0 0, calc(100% - 15px) 0%, 100% 100%, 0% 100%);
-}
-
-.statblock .traits > .item + .item, .monster .traits > .item + .item, .hazard .traits > .item + .item, .npc .traits > .item + .item {
-  border-top: 1px dotted var(--color);
-  margin-top: 5px;
-  padding-top: 5px;
+  -webkit-clip-path: polygon(0 0, calc(100% - 10px) 0%, 100% 100%, 0% 100%);
+          clip-path: polygon(0 0, calc(100% - 10px) 0%, 100% 100%, 0% 100%);
 }
 
 .statblock .traits .item > div, .monster .traits .item > div, .hazard .traits .item > div, .npc .traits .item > div {
   display: inline-block;
 }
 
-.statblock .traits .item .name, .monster .traits .item .name, .hazard .traits .item .name, .npc .traits .item .name {
-  display: inline-block;
-  color: black;
-  margin-right: 5px;
+.statblock .traits .item:not(.text), .monster .traits .item:not(.text), .hazard .traits .item:not(.text), .npc .traits .item:not(.text) {
+  margin-left: 30px;
 }
 
-.statblock .traits .item .name.text, .monster .traits .item .name.text, .hazard .traits .item .name.text, .npc .traits .item .name.text {
-  margin-right: 0px;
-}
-
-.statblock .traits .item .name:not(.text)::after, .monster .traits .item .name:not(.text)::after, .hazard .traits .item .name:not(.text)::after, .npc .traits .item .name:not(.text)::after {
-  font-weight: 700;
-  content: ": ";
-}
-
-.statblock .traits .item .name:not(.text)::before, .monster .traits .item .name:not(.text)::before, .hazard .traits .item .name:not(.text)::before, .npc .traits .item .name:not(.text)::before {
+.statblock .traits .item:not(.text)::before, .monster .traits .item:not(.text)::before, .hazard .traits .item:not(.text)::before, .npc .traits .item:not(.text)::before {
   content: '';
   display: inline-block;
   width: 1.5em;
   height: 1em;
   background-color: var(--trait);
-  margin-right: 3px;
+  margin: 3px 3px 0 -30px;
   vertical-align: top;
-  margin-top: 3px;
   -webkit-clip-path: polygon(0 0, calc(100% - 8px) 0%, 100% 100%, 0% 100%);
           clip-path: polygon(0 0, calc(100% - 8px) 0%, 100% 100%, 0% 100%);
   background-color: var(--gray);
 }
 
-.statblock .traits .item .common::before, .monster .traits .item .common::before, .hazard .traits .item .common::before, .npc .traits .item .common::before {
+.statblock .traits .item .label, .monster .traits .item .label, .hazard .traits .item .label, .npc .traits .item .label {
+  display: inline;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.statblock .traits .item .label::after, .monster .traits .item .label::after, .hazard .traits .item .label::after, .npc .traits .item .label::after {
+  font-weight: 700;
+  content: ":";
+}
+
+.statblock .traits .item .label .spec::before, .monster .traits .item .label .spec::before, .hazard .traits .item .label .spec::before, .npc .traits .item .label .spec::before {
+  content: " (";
+}
+
+.statblock .traits .item .label .spec::after, .monster .traits .item .label .spec::after, .hazard .traits .item .label .spec::after, .npc .traits .item .label .spec::after {
+  content: ")";
+}
+
+.statblock .traits .item.text, .monster .traits .item.text, .hazard .traits .item.text, .npc .traits .item.text {
+  margin: 8px 0;
+  background-color: var(--section-background);
+  padding: 8px;
+}
+
+.statblock .traits .item.text .label::after, .monster .traits .item.text .label::after, .hazard .traits .item.text .label::after, .npc .traits .item.text .label::after {
+  content: "";
+}
+
+.statblock .traits .item ul, .monster .traits .item ul, .hazard .traits .item ul, .npc .traits .item ul, .statblock .traits .item ol, .monster .traits .item ol, .hazard .traits .item ol, .npc .traits .item ol {
+  margin-bottom: 0;
+  padding-left: 15px;
+  list-style-type: '- ';
+}
+
+.statblock .traits .item p, .monster .traits .item p, .hazard .traits .item p, .npc .traits .item p {
+  display: inline-block;
+  text-indent: 1em;
+  margin-bottom: 0;
+}
+
+.statblock .traits .item p:first-of-type, .monster .traits .item p:first-of-type, .hazard .traits .item p:first-of-type, .npc .traits .item p:first-of-type {
+  display: inline;
+}
+
+.statblock .traits .item .container, .monster .traits .item .container, .hazard .traits .item .container, .npc .traits .item .container {
+  border: 2px solid var(--section-background);
+  padding: 5px;
+  width: 100%;
+}
+
+.statblock .traits .item .container .row, .monster .traits .item .container .row, .hazard .traits .item .container .row, .npc .traits .item .container .row {
+  margin-right: 0;
+  margin-left: 0;
+  font-size: 0.9em;
+}
+
+.statblock .traits .item .container .row .col, .monster .traits .item .container .row .col, .hazard .traits .item .container .row .col, .npc .traits .item .container .row .col {
+  padding: 2px 4px;
+}
+
+.statblock .traits .item .container .row .col:not(:last-child), .monster .traits .item .container .row .col:not(:last-child), .hazard .traits .item .container .row .col:not(:last-child), .npc .traits .item .container .row .col:not(:last-child) {
+  border-right: 2px solid var(--section-background);
+}
+
+.statblock .traits .item.common::before, .monster .traits .item.common::before, .hazard .traits .item.common::before, .npc .traits .item.common::before {
   background-color: var(--common) !important;
 }
 
-.statblock .traits .item .uncommon::before, .monster .traits .item .uncommon::before, .hazard .traits .item .uncommon::before, .npc .traits .item .uncommon::before {
+.statblock .traits .item.uncommon::before, .monster .traits .item.uncommon::before, .hazard .traits .item.uncommon::before, .npc .traits .item.uncommon::before {
   background-color: var(--uncommon) !important;
 }
 
-.statblock .traits .item .rare::before, .monster .traits .item .rare::before, .hazard .traits .item .rare::before, .npc .traits .item .rare::before {
+.statblock .traits .item.rare::before, .monster .traits .item.rare::before, .hazard .traits .item.rare::before, .npc .traits .item.rare::before {
   background-color: var(--rare) !important;
 }
 
@@ -342,14 +306,6 @@ i.icon {
   /* Stats */
 }
 
-i.icon.star-empty {
-  background-image: url("../img/icons/star-empty.svg");
-}
-
-i.icon.star-filled {
-  background-image: url("../img/icons/star-filled.svg");
-}
-
 i.icon.controller {
   background-image: url("../img/icons/brain.svg");
 }
@@ -362,7 +318,7 @@ i.icon.lurker {
   background-image: url("../img/icons/moon.svg");
 }
 
-i.icon.scout {
+i.icon.skirmisher {
   background-image: url("../img/icons/eye-open.svg");
 }
 
@@ -374,76 +330,40 @@ i.icon.supporter {
   background-image: url("../img/icons/support.svg");
 }
 
-i.icon.save {
-  background-image: url("../img/icons/hexagon.svg");
-}
-
-i.icon.immunity, i.icon.ac {
-  background-image: url("../img/icons/shield-full.svg");
+i.icon.ac {
+  background-image: url("../img/icons/shield-half.svg");
 }
 
 i.icon.hp {
   background-image: url("../img/icons/heart.svg");
 }
 
-i.icon.init {
-  background-image: url("../img/icons/lightning.svg");
-}
-
-i.icon.perception {
-  background-image: url("../img/icons/eye-open.svg");
-}
-
-i.icon.stealth {
-  background-image: url("../img/icons/eye-closed.svg");
-}
-
-i.icon.atk {
-  background-image: url("../img/icons/crosshair.svg");
-}
-
-i.icon.dcs {
-  background-image: url("../img/icons/target.svg");
-}
-
-i.icon.dmg {
-  background-image: url("../img/icons/flame.svg");
-}
-
-i.icon.prof {
-  background-image: url("../img/icons/tools.svg");
-}
-
-i.icon.cr {
-  background-image: url("../img/icons/award.svg");
+i.icon.quickstats {
+  background-image: url("../img/icons/swords.svg");
 }
 
 i.icon.speed {
-  background-image: url("../img/icons/footprints.svg");
+  background-image: url("../img/icons/lightning.svg");
 }
 
-i.icon.skill {
-  background-image: url("../img/icons/bulb.svg");
-}
-
-i.icon.threshold {
-  background-image: url("../img/icons/pulse.svg");
-}
-
-i.icon.vulnerable {
-  background-image: url("../img/icons/vulnerable.svg");
-}
-
-i.icon.resist {
-  background-image: url("../img/icons/shield-half.svg");
+i.icon.skills {
+  background-image: url("../img/icons/tools.svg");
 }
 
 i.icon.senses {
-  background-image: url("../img/icons/bell.svg");
+  background-image: url("../img/icons/eye-open.svg");
 }
 
-i.icon.language {
+i.icon.languages {
   background-image: url("../img/icons/speech.svg");
+}
+
+i.icon.prof {
+  background-image: url("../img/icons/award.svg");
+}
+
+i.icon.items {
+  background-image: url("../img/icons/bag.svg");
 }
 
 .bg-redberry {

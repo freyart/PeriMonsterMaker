@@ -20,3 +20,10 @@ function getNumberOrNull(value: string | number | null) : number | null{
     }
     else return value
 }
+
+function addCommaIfNotEmpty(value: string | number): string{
+    if(typeof(value) === "string" && value == ""){
+        return value
+    }
+    else return String(value).trim() + ", "
+}

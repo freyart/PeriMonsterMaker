@@ -6,18 +6,18 @@ enum Rank {
     Minion = 0,
     Grunt = 1,
     Elite = 2,
-    "Paragon vs. 3" = 3,
-    "Paragon vs. 4" = 4,
-    "Paragon vs. 5" = 5,
-    "Paragon vs. 6" = 6,
-    "Paragon vs. 7" = 7,
+    "Paragon T3" = 3,
+    "Paragon T4" = 4,
+    "Paragon T5" = 5,
+    "Paragon T6" = 6,
+    "Paragon T7" = 7,
 }
 
 enum Role {
     Controller = 1,
     Defender = 2,
     Lurker = 3,
-    Scout = 4,
+    Skirmisher = 4,
     Striker = 5,
     Supporter = 6,
 }
@@ -34,7 +34,7 @@ enum Ability {
 
 enum AbilityAttr {
     Low,
-    Med,
+    Mid,
     High,
 }
 
@@ -59,12 +59,22 @@ enum Size {
     Gargantuan
 }
 
-enum Origin {
-    Aberrant, Arcane, Corrupted, Elemental, Fey, Immortal, Natural, Spiritual
-}
-
-enum Form {
-    Animate, Beast, Hazard, Humanoid, Monstrosity
+enum MonsterType {
+    Aberration, 
+    Beast, 
+    Celestial, 
+    Construct, 
+    Dragon, 
+    Elemental, 
+    Fey, 
+    Fiend, 
+    Giant, 
+    Humanoid, 
+    Monstrosity, 
+    Ooze, 
+    Plant, 
+    Undead, 
+    Other
 }
 
 enum FeatureType {
