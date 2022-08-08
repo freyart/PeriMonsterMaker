@@ -33,15 +33,9 @@ enum Ability {
 }
 
 enum AbilityAttr {
-    Low,
-    Mid,
-    High,
-}
-
-enum TrainedValue {
-    Untrained,
-    Half,
-    Trained,
+    Low = "low",
+    Mid = "mid",
+    High = "high",
 }
 
 enum StatblockType {
@@ -51,30 +45,31 @@ enum StatblockType {
 }
 
 enum Size {
-    Tiny, 
-    Small, 
-    Medium, 
-    Large, 
-    Huge, 
-    Gargantuan
+    Tiny = "tiny", 
+    Small = "small", 
+    Medium = "medium", 
+    Large = "large", 
+    Huge = "huge", 
+    Gargantuan = "gargantuan"
 }
 
 enum MonsterType {
-    Aberration, 
-    Beast, 
-    Celestial, 
-    Construct, 
-    Dragon, 
-    Elemental, 
-    Fey, 
-    Fiend, 
-    Giant, 
-    Humanoid, 
-    Monstrosity, 
-    Ooze, 
-    Plant, 
-    Undead, 
-    Other
+    Aberration = "aberration", 
+    Beast = "beast", 
+    Celestial = "celestial", 
+    Construct = "construct", 
+    Dragon = "dragon", 
+    Elemental = "elemental", 
+    Fey = "fey", 
+    Fiend = "fiend", 
+    Giant = "giant", 
+    Humanoid = "humanoid", 
+    Monstrosity = "monstrosity", 
+    Ooze = "ooze", 
+    Plant = "plant", 
+    Undead = "undead", 
+    Hazard = "hazard",
+    Other = "other"
 }
 
 enum FeatureType {

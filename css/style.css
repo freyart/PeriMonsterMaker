@@ -208,7 +208,7 @@
   font-weight: bold;
 }
 
-.statblock .traits .item .label::after, .monster .traits .item .label::after, .hazard .traits .item .label::after, .npc .traits .item .label::after {
+.statblock .traits .item .label:not(:empty)::after, .monster .traits .item .label:not(:empty)::after, .hazard .traits .item .label:not(:empty)::after, .npc .traits .item .label:not(:empty)::after {
   font-weight: 700;
   content: ":";
 }
