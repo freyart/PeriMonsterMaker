@@ -172,7 +172,7 @@ class StatsGenerator {
 
     private getAbilityModifiers(input:MonsterInput, output:MonsterOutput):void{
         input.abilityOrder.forEach( (value, index) => {
-            const values = this.attribuerAbilities(input.level, input.rank, input.role, <AbilityAttr>value)
+            const values = this.attribuerAbilities(input.level, input.rank, <AbilityAttr>value)
             switch (index) {
                 case 0:
                     output.strScore = values.abilityScore
@@ -202,9 +202,9 @@ class StatsGenerator {
         })
     }
 
-    private attribuerAbilities(level: number, rank: Rank, role: Role, abilityValue: AbilityAttr):{abilityScore: number, save: number} {
+    private attribuerAbilities(level: number, rank: Rank, abilityValue: AbilityAttr):{abilityScore: number, save: number} {
         const baseStats = this.getStats(level)
-        let mod, save, prof: number
+        let mod, save :number
 
         switch (abilityValue) {
             case AbilityAttr.High:

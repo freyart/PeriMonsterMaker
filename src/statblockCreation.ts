@@ -209,7 +209,7 @@ function getAttributesOrderForMonster():AbilityAttr[] {
     for (let i = 1; i <= 6; i++) {
         let attribute = getInputById("attr" + i)
         if(attribute.value != ""){
-            order.push(<AbilityAttr>Number(attribute.value))
+            order.push(<AbilityAttr>attribute.value)
         }
     }
     return order
@@ -257,8 +257,8 @@ function prepareMonster() {
         role: Number(input_role.value),
         keywords: input_keywords.value,
         other: input_other.value,
-        size: Number(input_size.value),
-        monstertype: Number(input_monstertype.value)
+        size: <Size>input_size.value,
+        monstertype: <MonsterType>input_monstertype.value
     }
     statblockSortie.stats = {
         ac: Number(getValueOrPlaceholder(input_ac)),

@@ -635,9 +635,8 @@ class Statblock {
             const top1 = this.CreateDivWithClass("name");
             top1.textContent = this.header.name;
             const top2 = this.CreateDivWithClass("subtitle");
-            top2.textContent =
-                Size[Number(this.header.size)] + ' '
-                    + MonsterType[Number(this.header.monstertype)];
+            top2.textContent = getKeyFromEnumValue(Size, this.header.size) + ' '
+                + getKeyFromEnumValue(MonsterType, this.header.monstertype);
             if (this.header.keywords != "") {
                 top2.textContent += " (" + this.header.keywords + ")";
             }
@@ -746,8 +745,9 @@ class Statblock {
     }
     CreateFeatures() {
         const traits = this.CreateDivWithClass("traits");
+        const ordreFeatureType = new Array(FeatureType.Trigger, FeatureType.Trait, FeatureType.Free, FeatureType.Bonus, FeatureType.Action, FeatureType.Reaction, FeatureType.Countermeasure, FeatureType.Salvage);
         if (this.stats != null) {
-            getAllEnumValues(FeatureType).forEach(type => {
+            ordreFeatureType.forEach(type => {
                 const selectionFeature = this.features.filter(function (x) { return x.type === type; });
                 if (selectionFeature.length > 0) {
                     traits.appendChild(this.CreateFeatureSection(FeatureType[type]));
@@ -1039,7 +1039,7 @@ function getAttributesOrderForMonster() {
     for (let i = 1; i <= 6; i++) {
         let attribute = getInputById("attr" + i);
         if (attribute.value != "") {
-            order.push(Number(attribute.value));
+            order.push(attribute.value);
         }
     }
     return order;
@@ -1083,8 +1083,8 @@ function prepareMonster() {
         role: Number(input_role.value),
         keywords: input_keywords.value,
         other: input_other.value,
-        size: Number(input_size.value),
-        monstertype: Number(input_monstertype.value)
+        size: input_size.value,
+        monstertype: input_monstertype.value
     };
     statblockSortie.stats = {
         ac: Number(getValueOrPlaceholder(input_ac)),
@@ -1375,7 +1375,7 @@ class StatsGenerator {
     }
     getAbilityModifiers(input, output) {
         input.abilityOrder.forEach((value, index) => {
-            const values = this.attribuerAbilities(input.level, input.rank, input.role, value);
+            const values = this.attribuerAbilities(input.level, input.rank, value);
             switch (index) {
                 case 0:
                     output.strScore = values.abilityScore;
@@ -1404,9 +1404,9 @@ class StatsGenerator {
             }
         });
     }
-    attribuerAbilities(level, rank, role, abilityValue) {
+    attribuerAbilities(level, rank, abilityValue) {
         const baseStats = this.getStats(level);
-        let mod, save, prof;
+        let mod, save;
         switch (abilityValue) {
             case AbilityAttr.High:
                 mod = baseStats.abilityMods.high;
@@ -1561,16 +1561,10 @@ var Ability;
 })(Ability || (Ability = {}));
 var AbilityAttr;
 (function (AbilityAttr) {
-    AbilityAttr[AbilityAttr["Low"] = 0] = "Low";
-    AbilityAttr[AbilityAttr["Mid"] = 1] = "Mid";
-    AbilityAttr[AbilityAttr["High"] = 2] = "High";
+    AbilityAttr["Low"] = "low";
+    AbilityAttr["Mid"] = "mid";
+    AbilityAttr["High"] = "high";
 })(AbilityAttr || (AbilityAttr = {}));
-var TrainedValue;
-(function (TrainedValue) {
-    TrainedValue[TrainedValue["Untrained"] = 0] = "Untrained";
-    TrainedValue[TrainedValue["Half"] = 1] = "Half";
-    TrainedValue[TrainedValue["Trained"] = 2] = "Trained";
-})(TrainedValue || (TrainedValue = {}));
 var StatblockType;
 (function (StatblockType) {
     StatblockType["Monster"] = "monster";
@@ -1579,30 +1573,31 @@ var StatblockType;
 })(StatblockType || (StatblockType = {}));
 var Size;
 (function (Size) {
-    Size[Size["Tiny"] = 0] = "Tiny";
-    Size[Size["Small"] = 1] = "Small";
-    Size[Size["Medium"] = 2] = "Medium";
-    Size[Size["Large"] = 3] = "Large";
-    Size[Size["Huge"] = 4] = "Huge";
-    Size[Size["Gargantuan"] = 5] = "Gargantuan";
+    Size["Tiny"] = "tiny";
+    Size["Small"] = "small";
+    Size["Medium"] = "medium";
+    Size["Large"] = "large";
+    Size["Huge"] = "huge";
+    Size["Gargantuan"] = "gargantuan";
 })(Size || (Size = {}));
 var MonsterType;
 (function (MonsterType) {
-    MonsterType[MonsterType["Aberration"] = 0] = "Aberration";
-    MonsterType[MonsterType["Beast"] = 1] = "Beast";
-    MonsterType[MonsterType["Celestial"] = 2] = "Celestial";
-    MonsterType[MonsterType["Construct"] = 3] = "Construct";
-    MonsterType[MonsterType["Dragon"] = 4] = "Dragon";
-    MonsterType[MonsterType["Elemental"] = 5] = "Elemental";
-    MonsterType[MonsterType["Fey"] = 6] = "Fey";
-    MonsterType[MonsterType["Fiend"] = 7] = "Fiend";
-    MonsterType[MonsterType["Giant"] = 8] = "Giant";
-    MonsterType[MonsterType["Humanoid"] = 9] = "Humanoid";
-    MonsterType[MonsterType["Monstrosity"] = 10] = "Monstrosity";
-    MonsterType[MonsterType["Ooze"] = 11] = "Ooze";
-    MonsterType[MonsterType["Plant"] = 12] = "Plant";
-    MonsterType[MonsterType["Undead"] = 13] = "Undead";
-    MonsterType[MonsterType["Other"] = 14] = "Other";
+    MonsterType["Aberration"] = "aberration";
+    MonsterType["Beast"] = "beast";
+    MonsterType["Celestial"] = "celestial";
+    MonsterType["Construct"] = "construct";
+    MonsterType["Dragon"] = "dragon";
+    MonsterType["Elemental"] = "elemental";
+    MonsterType["Fey"] = "fey";
+    MonsterType["Fiend"] = "fiend";
+    MonsterType["Giant"] = "giant";
+    MonsterType["Humanoid"] = "humanoid";
+    MonsterType["Monstrosity"] = "monstrosity";
+    MonsterType["Ooze"] = "ooze";
+    MonsterType["Plant"] = "plant";
+    MonsterType["Undead"] = "undead";
+    MonsterType["Hazard"] = "hazard";
+    MonsterType["Other"] = "other";
 })(MonsterType || (MonsterType = {}));
 var FeatureType;
 (function (FeatureType) {
@@ -1709,6 +1704,9 @@ function setValueIfNotEqual(controle, value, compareValue) {
 function getAllEnumKeys(enumType) { return Object.keys(enumType).filter(key => isNaN(Number(key))); }
 function getAllEnumValues(enumType) { return getAllEnumKeys(enumType).map(key => enumType[key]); }
 function getAllEnumEntries(enumType) { return getAllEnumKeys(enumType).map(key => [key, enumType[key]]); }
+function getKeyFromEnumValue(enumType, value) {
+    return Object.keys(enumType)[Object.values(enumType).indexOf(value)];
+}
 function getAbilityModFromScore(ability) {
     if (ability === 0)
         return null;

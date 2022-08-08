@@ -108,9 +108,9 @@ class Statblock {
             const top1 = this.CreateDivWithClass("name")
             top1.textContent = this.header.name
             const top2 = this.CreateDivWithClass("subtitle")
-            top2.textContent = 
-                Size[Number(this.header.size)] + ' ' 
-                + MonsterType[Number(this.header.monstertype)]
+
+            top2.textContent = getKeyFromEnumValue(Size, this.header.size) + ' ' 
+                + getKeyFromEnumValue(MonsterType, this.header.monstertype)
             if(this.header.keywords != "") {
                 top2.textContent += " (" + this.header.keywords + ")"
             }
@@ -252,9 +252,18 @@ class Statblock {
 
     private CreateFeatures() : Element {
         const traits = this.CreateDivWithClass("traits") 
-        if(this.stats != null){
+        const ordreFeatureType = new Array(
+            FeatureType.Trigger, 
+            FeatureType.Trait, 
+            FeatureType.Free, 
+            FeatureType.Bonus, 
+            FeatureType.Action, 
+            FeatureType.Reaction, 
+            FeatureType.Countermeasure, 
+            FeatureType.Salvage)
 
-            getAllEnumValues(FeatureType).forEach(type => {
+        if(this.stats != null){
+            ordreFeatureType.forEach(type => {
                 const selectionFeature = this.features.filter(function(x){ return x.type === type})
                 if (selectionFeature.length > 0){
                     traits.appendChild(this.CreateFeatureSection(FeatureType[type]))
@@ -263,7 +272,6 @@ class Statblock {
                     });
                 }
             });
-
         }
         return traits
     }
